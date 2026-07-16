@@ -67,19 +67,19 @@ export default function EvoLayout({
         </nav>
 
         <div className="p-4 border-t border-white/6">
-          <div className="text-[10px] text-slate-600 uppercase tracking-wider mb-2">System</div>
+          <div className="text-[10px] text-slate-600 uppercase tracking-wider mb-2">{t(locale, 'systemLabel')}</div>
           <div className="space-y-2 text-xs">
             <div className="flex justify-between">
-              <span className="text-slate-500">Agent Stack</span>
-              <span className="text-emerald-400">Online</span>
+              <span className="text-slate-500">{t(locale, 'agentStack')}</span>
+              <span className="text-emerald-400">{t(locale, 'online')}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500">Projects</span>
+              <span className="text-slate-500">{t(locale, 'projectsView')}</span>
               <span className="text-cyan-400">{projects.length}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500">Persistence</span>
-              <span className="text-emerald-400">OK</span>
+              <span className="text-slate-500">{t(locale, 'persistence')}</span>
+              <span className="text-emerald-400">{t(locale, 'ok')}</span>
             </div>
           </div>
         </div>

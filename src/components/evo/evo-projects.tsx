@@ -10,6 +10,15 @@ import {
   ChevronRight, Shield, Zap, X, FileText
 } from 'lucide-react';
 
+const STAGE_KEYS: Record<string, string> = {
+  'intake': 'stageIntake',
+  'enrichment': 'stageEnrichment',
+  'scoring': 'stageScoring',
+  'synthesis': 'stageSynthesis',
+  'review': 'stageReview',
+  'export-ready': 'stageExportReady',
+};
+
 const exportFormats: { key: ExportFormat; labelKey: string }[] = [
   { key: 'brief', labelKey: 'exportBrief' },
   { key: 'sales_brief', labelKey: 'exportSales' },
@@ -49,7 +58,7 @@ export default function EvoProjects() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white">{t(locale, 'projectsRegistry')}</h1>
-          <p className="text-sm text-slate-500">{filtered.length} of {projects.length} projects</p>
+          <p className="text-sm text-slate-500">{filtered.length} of {projects.length} {t(locale, 'projects')}</p>
         </div>
       </div>
 
@@ -77,14 +86,14 @@ export default function EvoProjects() {
           className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none"
         >
           <option value="all">{t(locale, 'allStages')}</option>
-          <option value="intake">Intake</option>
-          <option value="enrichment">Enrichment</option>
-          <option value="scoring">Scoring</option>
-          <option value="synthesis">Synthesis</option>
-          <option value="review">Review</option>
-          <option value="export-ready">Export Ready</option>
+          <option value="intake">{t(locale, 'stageIntake')}</option>
+          <option value="enrichment">{t(locale, 'stageEnrichment')}</option>
+          <option value="scoring">{t(locale, 'stageScoring')}</option>
+          <option value="synthesis">{t(locale, 'stageSynthesis')}</option>
+          <option value="review">{t(locale, 'stageReview')}</option>
+          <option value="export-ready">{t(locale, 'stageExportReady')}</option>
         </select>
-        <span className="text-xs text-slate-500">{filtered.length} results</span>
+        <span className="text-xs text-slate-500">{t(locale, 'resultsCount').replace('{n}', String(filtered.length))}</span>
       </div>
 
       {/* Table */}
@@ -92,14 +101,14 @@ export default function EvoProjects() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-white/6 text-xs text-slate-500 uppercase">
-              <th className="text-left px-4 py-3">Project</th>
-              <th className="text-left px-4 py-3">Geo</th>
-              <th className="text-left px-4 py-3">Niche</th>
-              <th className="text-left px-4 py-3">Stage</th>
-              <th className="text-left px-4 py-3">Opportunity</th>
-              <th className="text-left px-4 py-3">Risk</th>
-              <th className="text-left px-4 py-3">Margin</th>
-              <th className="text-left px-4 py-3">Action</th>
+              <th className="text-left px-4 py-3">{t(locale, 'project')}</th>
+              <th className="text-left px-4 py-3">{t(locale, 'geo')}</th>
+              <th className="text-left px-4 py-3">{t(locale, 'niche')}</th>
+              <th className="text-left px-4 py-3">{t(locale, 'stage')}</th>
+              <th className="text-left px-4 py-3">{t(locale, 'opportunity')}</th>
+              <th className="text-left px-4 py-3">{t(locale, 'risk')}</th>
+              <th className="text-left px-4 py-3">{t(locale, 'margin')}</th>
+              <th className="text-left px-4 py-3">{t(locale, 'action')}</th>
             </tr>
           </thead>
           <tbody>
@@ -123,7 +132,7 @@ export default function EvoProjects() {
                   <td className="px-4 py-3 text-sm text-slate-300">{p.niche}</td>
                   <td className="px-4 py-3">
                     <span className="px-2 py-0.5 text-[10px] font-medium rounded bg-cyan-400/10 text-cyan-300">
-                      {p.stage}
+                      {t(locale, STAGE_KEYS[p.stage])}
                     </span>
                   </td>
                   <td className="px-4 py-3">
@@ -252,7 +261,7 @@ function ProjectDetail({
               </div>
               <div className="flex justify-between p-2 rounded bg-white/3">
                 <span className="text-slate-500">{t(locale, 'aiConfidence')}</span>
-                <span className="text-white">{enriched?.synthesis?.confidence ? `${(enriched.synthesis.confidence * 100).toFixed(1)}%` : 'N/A'}</span>
+                <span className="text-white">{enriched?.synthesis?.confidence ? `${(enriched.synthesis.confidence * 100).toFixed(1)}%` : t(locale, 'na')}</span>
               </div>
             </div>
           </div>

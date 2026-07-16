@@ -13,8 +13,8 @@ export default function EvoSignals() {
         <h1 className="text-xl font-bold text-white">{t(locale, 'signalsIntel')}</h1>
         <p className="text-sm text-slate-500">
           {signals.length > 0
-            ? `${signals.length} signals derived from project analysis`
-            : 'Run analysis to generate market signals'}
+            ? t(locale, 'signalsCount').replace('{n}', String(signals.length))
+            : t(locale, 'signalsEmptyHint')}
         </p>
       </div>
 
@@ -33,7 +33,7 @@ export default function EvoSignals() {
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">Velocity</span>
+                  <span className="text-slate-500">{t(locale, 'velocity')}</span>
                   <span className="text-white">{(signal.velocity * 100).toFixed(0)}%</span>
                 </div>
                 <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
@@ -43,7 +43,7 @@ export default function EvoSignals() {
                   />
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">Confidence</span>
+                  <span className="text-slate-500">{t(locale, 'confidence')}</span>
                   <span className="text-white">{(signal.confidence * 100).toFixed(0)}%</span>
                 </div>
                 <div className="flex items-center gap-1 text-xs">
@@ -59,8 +59,8 @@ export default function EvoSignals() {
       ) : (
         <div className="bg-gradient-to-br from-[#161923]/70 to-[#0f1119]/50 backdrop-blur-xl border border-white/6 rounded-xl p-8 text-center">
           <AlertCircle className="w-8 h-8 text-slate-600 mx-auto mb-3" />
-          <div className="text-sm text-slate-500">No signals available</div>
-          <div className="text-xs text-slate-600 mt-1">Run analysis to generate market signals from project data</div>
+          <div className="text-sm text-slate-500">{t(locale, 'signalsEmpty')}</div>
+          <div className="text-xs text-slate-600 mt-1">{t(locale, 'signalsEmptyHint')}</div>
         </div>
       )}
     </div>

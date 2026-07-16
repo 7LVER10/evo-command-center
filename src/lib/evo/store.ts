@@ -4,6 +4,7 @@ import { EnrichedProject, ExportFormat } from './vnext-types';
 import { runAgentStack, generateSignals } from './agent-engine';
 import { generateExport, downloadExport, copyToClipboard } from './export-engine';
 import { getHistory, addHistoryEntry } from './history-engine';
+import { t } from './i18n';
 
 const STORAGE_KEY = 'evo-state';
 
@@ -121,10 +122,10 @@ export const useEvoStore = create<EvoState>((set, get) => ({
       const history = await getHistory();
       set({ analysisHistory: history });
 
-      get().addToast({ type: 'success', message: `Analysis complete: ${data.items.length} projects enriched` });
+      get().addToast({ type: 'success', message: t(get().locale, 'analysisComplete').replace('{n}', String(data.items.length)) });
     } catch {
       set({ analysisStatus: 'error' });
-      get().addToast({ type: 'error', message: 'Analysis failed' });
+      get().addToast({ type: 'error', message: t(get().locale, 'analysisFailed') });
     }
   },
 
@@ -136,9 +137,9 @@ export const useEvoStore = create<EvoState>((set, get) => ({
         body: JSON.stringify({ status }),
       });
       get().loadProjects();
-      get().addToast({ type: 'success', message: 'Status updated' });
+      get().addToast({ type: 'success', message: t(get().locale, 'statusUpdated') });
     } catch {
-      get().addToast({ type: 'error', message: 'Failed to update status' });
+      get().addToast({ type: 'error', message: t(get().locale, 'statusUpdateFailed') });
     }
   },
 
@@ -146,14 +147,14 @@ export const useEvoStore = create<EvoState>((set, get) => ({
     const { locale } = get();
     const payload = generateExport(project, format, locale);
     downloadExport(payload, project.name.replace(/\s+/g, '-').toLowerCase());
-    get().addToast({ type: 'success', message: `Exported as ${format}` });
+    get().addToast({ type: 'success', message: t(get().locale, 'exportedAs').replace('{format}', format) });
   },
 
   copyExport: async (project, format) => {
     const { locale } = get();
     const payload = generateExport(project, format, locale);
     await copyToClipboard(payload.content);
-    get().addToast({ type: 'success', message: 'Copied to clipboard' });
+    get().addToast({ type: 'success', message: t(get().locale, 'copiedToClipboard') });
   },
 
   loadHistory: async () => {

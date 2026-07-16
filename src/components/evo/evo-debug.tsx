@@ -17,7 +17,7 @@ export default function EvoDebug() {
       <div className="space-y-6">
         <div>
           <h1 className="text-xl font-bold text-white">{t(locale, 'debugView')}</h1>
-          <p className="text-sm text-slate-500">Debug view is only available in development mode</p>
+          <p className="text-sm text-slate-500">{t(locale, 'debugDevOnly')}</p>
         </div>
       </div>
     );
@@ -36,14 +36,14 @@ export default function EvoDebug() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white">{t(locale, 'debugView')}</h1>
-          <p className="text-sm text-slate-500">Raw data inspection and debugging</p>
+          <p className="text-sm text-slate-500">{t(locale, 'rawDataInspection')}</p>
         </div>
         <button
           onClick={handleCopy}
           className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm text-slate-300 hover:bg-white/10 transition"
         >
           {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-          {copied ? 'Copied!' : 'Copy JSON'}
+          {copied ? t(locale, 'copied') : t(locale, 'copyJson')}
         </button>
       </div>
 
@@ -72,7 +72,7 @@ export default function EvoDebug() {
         <div className="px-4 py-2 border-b border-white/6 flex items-center gap-2">
           <Bug className="w-4 h-4 text-slate-500" />
           <span className="text-xs text-slate-500">{t(locale, 'rawPayload')}</span>
-          <span className="text-xs text-slate-600">· {data.length} items</span>
+          <span className="text-xs text-slate-600">· {data.length} {t(locale, 'items')}</span>
         </div>
         <pre className="p-4 text-[11px] text-slate-400 overflow-auto max-h-[600px] font-mono">
           {JSON.stringify(data, null, 2)}

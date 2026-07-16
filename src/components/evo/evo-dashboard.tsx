@@ -38,12 +38,12 @@ export default function EvoDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-white">Command Overview</h1>
-          <p className="text-sm text-slate-500">Real-time B2B project intelligence · {new Date().toLocaleTimeString()}</p>
+          <h1 className="text-xl font-bold text-white">{t(locale, 'commandOverview')}</h1>
+          <p className="text-sm text-slate-500">{t(locale, 'realTimeIntel')} · {new Date().toLocaleTimeString()}</p>
         </div>
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
           <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-xs text-emerald-400">All systems operational</span>
+          <span className="text-xs text-emerald-400">{t(locale, 'allSystemsOperational')}</span>
         </div>
       </div>
 
@@ -62,7 +62,7 @@ export default function EvoDashboard() {
             <div className="p-2 rounded-lg bg-emerald-400/10"><TrendingUp className="w-4 h-4 text-emerald-400" /></div>
           </div>
           <div className="text-2xl font-bold text-emerald-400">{stats.highOpportunity}</div>
-          <div className="text-xs text-slate-500">{t(locale, 'highOpportunity') || 'High Value'}</div>
+          <div className="text-xs text-slate-500">{t(locale, 'highValue')}</div>
         </div>
 
         <div className="bg-gradient-to-br from-[#161923]/70 to-[#0f1119]/50 backdrop-blur-xl border border-white/6 rounded-xl p-4">
@@ -70,7 +70,7 @@ export default function EvoDashboard() {
             <div className="p-2 rounded-lg bg-rose-400/10"><AlertTriangle className="w-4 h-4 text-rose-400" /></div>
           </div>
           <div className="text-2xl font-bold text-rose-400">{stats.flaggedRisks}</div>
-          <div className="text-xs text-slate-500">{t(locale, 'flaggedRisks') || 'Flagged'}</div>
+          <div className="text-xs text-slate-500">{t(locale, 'flagged')}</div>
         </div>
 
         <div className="bg-gradient-to-br from-[#161923]/70 to-[#0f1119]/50 backdrop-blur-xl border border-white/6 rounded-xl p-4">
@@ -78,7 +78,7 @@ export default function EvoDashboard() {
             <div className="p-2 rounded-lg bg-amber-400/10"><Activity className="w-4 h-4 text-amber-400" /></div>
           </div>
           <div className="text-2xl font-bold text-amber-400">{stats.avgMargin}%</div>
-          <div className="text-xs text-slate-500">{t(locale, 'avgMargin') || 'Avg Margin'}</div>
+          <div className="text-xs text-slate-500">{t(locale, 'avgMarginLabel')}</div>
         </div>
       </div>
 
@@ -142,7 +142,7 @@ export default function EvoDashboard() {
             ))}
           </div>
         ) : (
-          <div className="text-sm text-slate-500 text-center py-4">No analysis history yet. Run analysis to see activity.</div>
+          <div className="text-sm text-slate-500 text-center py-4">{t(locale, 'noAnalysisHistory')}</div>
         )}
       </div>
 
@@ -153,7 +153,7 @@ export default function EvoDashboard() {
           {[
             { label: t(locale, 'apiGateway'), status: 'ok', value: '200' },
             { label: t(locale, 'agentStack'), status: 'ok', value: '6/6' },
-            { label: t(locale, 'analysisQueue'), status: 'ok', value: 'Idle' },
+            { label: t(locale, 'analysisQueue'), status: 'ok', value: t(locale, 'idle') },
             { label: t(locale, 'persistence'), status: 'ok', value: 'SQLite' },
             { label: t(locale, 'exportEngine'), status: 'ok', value: '5 fmt' },
           ].map((s) => (
