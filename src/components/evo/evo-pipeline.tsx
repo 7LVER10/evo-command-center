@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { useEvoStore } from '@/lib/evo/store';
-import { t } from '@/lib/evo/i18n';
+import { t, nicheLabel } from '@/lib/evo/i18n';
 import { GitBranch, ChevronRight } from 'lucide-react';
 
 const STAGES = ['intake', 'enrichment', 'scoring', 'synthesis', 'review', 'export-ready'];
@@ -86,7 +86,7 @@ export default function EvoPipeline() {
               <tr key={p.id} className="border-b border-white/4 hover:bg-white/2">
                 <td className="px-4 py-2 text-sm text-white">{p.name}</td>
                 <td className="px-4 py-2 text-sm text-slate-300">{p.country}</td>
-                <td className="px-4 py-2 text-sm text-slate-300">{p.niche}</td>
+                <td className="px-4 py-2 text-sm text-slate-300">{nicheLabel(locale, p.niche)}</td>
                 <td className="px-4 py-2">
                   <span
                     className="px-2 py-0.5 text-[10px] font-medium rounded"

@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { useEvoStore } from '@/lib/evo/store';
-import { t } from '@/lib/evo/i18n';
+import { t, nicheLabel } from '@/lib/evo/i18n';
 import { Locale } from '@/lib/evo/types';
 import { EnrichedProject, ExportFormat } from '@/lib/evo/vnext-types';
 import {
@@ -93,7 +93,7 @@ export default function EvoProjects() {
           className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none"
         >
           <option value="all">{t(locale, 'allNiches')}</option>
-          {[...new Set(projects.map(p => p.niche))].map(n => <option key={n} value={n}>{n}</option>)}
+          {[...new Set(projects.map(p => p.niche))].map(n => <option key={n} value={n}>{nicheLabel(locale, n)}</option>)}
         </select>
         <select
           value={filterStage}
@@ -146,7 +146,7 @@ export default function EvoProjects() {
                     <div className="text-[10px] text-slate-500 mt-0.5 line-clamp-1">{summary}</div>
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-300">{p.country}</td>
-                  <td className="px-4 py-3 text-sm text-slate-300">{p.niche}</td>
+                  <td className="px-4 py-3 text-sm text-slate-300">{nicheLabel(locale, p.niche)}</td>
                   <td className="px-4 py-3">
                     <span className="px-2 py-0.5 text-[10px] font-medium rounded" style={{ backgroundColor: `${STAGE_COLORS[p.stage]}15`, color: STAGE_COLORS[p.stage] }}>
                       {t(locale, STAGE_KEYS[p.stage])}
@@ -241,7 +241,7 @@ function ProjectDetail({
               <span className="px-2 py-0.5 text-[10px] font-medium rounded" style={{ backgroundColor: `${STAGE_COLORS[project.stage]}15`, color: STAGE_COLORS[project.stage] }}>{t(locale, STAGE_KEYS[project.stage])}</span>
               <span className={`px-2 py-0.5 text-[10px] font-medium rounded ${PRIORITY_COLORS[project.priority]}`}>{project.priority.toUpperCase()}</span>
             </div>
-            <div className="text-xs text-slate-500 mt-1">{project.country} · {project.niche} · {project.grp}</div>
+            <div className="text-xs text-slate-500 mt-1">{project.country} · {nicheLabel(locale, project.niche)} · {project.grp}</div>
           </div>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5"><X className="w-4 h-4 text-slate-400" /></button>
         </div>
@@ -284,7 +284,7 @@ function ProjectDetail({
               </div>
               <div className="flex justify-between p-2 rounded bg-white/3">
                 <span className="text-slate-500">{t(locale, 'aiNiche')}</span>
-                <span className="text-white">{project.niche}</span>
+                <span className="text-white">{nicheLabel(locale, project.niche)}</span>
               </div>
               <div className="flex justify-between p-2 rounded bg-white/3">
                 <span className="text-slate-500">{t(locale, 'aiGroup')}</span>

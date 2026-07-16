@@ -1,7 +1,7 @@
 'use client';
 
 import { useEvoStore } from '@/lib/evo/store';
-import { t } from '@/lib/evo/i18n';
+import { t, nicheLabel } from '@/lib/evo/i18n';
 import { Download, FileText } from 'lucide-react';
 
 export default function EvoExports() {
@@ -49,7 +49,7 @@ export default function EvoExports() {
               <div key={p.id} className="flex items-center justify-between p-2 rounded bg-white/3">
                 <div>
                   <div className="text-sm text-white">{p.name}</div>
-                  <div className="text-xs text-slate-500">{p.country} · {p.niche}</div>
+                  <div className="text-xs text-slate-500">{p.country} · {nicheLabel(locale, p.niche)}</div>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-emerald-400">O:{p.scores?.opportunity?.value}</span>

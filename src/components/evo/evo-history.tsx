@@ -1,7 +1,7 @@
 'use client';
 
 import { useEvoStore } from '@/lib/evo/store';
-import { t } from '@/lib/evo/i18n';
+import { t, nicheLabel } from '@/lib/evo/i18n';
 import { Clock, CheckCircle } from 'lucide-react';
 
 export default function EvoHistory() {
@@ -24,7 +24,7 @@ export default function EvoHistory() {
                   <div>
                     <div className="text-sm font-medium text-white">{h.query || t(locale, 'allProjects')}</div>
                     <div className="text-xs text-slate-500">
-                      {h.geo !== 'all' ? h.geo : t(locale, 'allGeosLower')} · {h.niche !== 'all' ? h.niche : t(locale, 'allNichesLower')} · {h.result_count} {t(locale, 'projects')}
+                      {h.geo !== 'all' ? h.geo : t(locale, 'allGeosLower')} · {h.niche !== 'all' ? nicheLabel(locale, h.niche) : t(locale, 'allNichesLower')} · {h.result_count} {t(locale, 'projects')}
                     </div>
                   </div>
                 </div>

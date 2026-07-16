@@ -4,8 +4,7 @@ import { useEvoStore } from '@/lib/evo/store';
 import { t } from '@/lib/evo/i18n';
 import {
   LayoutDashboard, FolderOpen, GitBranch, Radio, Clock,
-  Download, HeartPulse, Bug, Search, Bell, ChevronRight,
-  Globe, Zap
+  Download, Search, Bell, Zap
 } from 'lucide-react';
 
 const navItems = [
@@ -15,8 +14,6 @@ const navItems = [
   { id: 'signals', icon: Radio, labelKey: 'signals' },
   { id: 'history', icon: Clock, labelKey: 'history' },
   { id: 'exports', icon: Download, labelKey: 'exports' },
-  { id: 'health', icon: HeartPulse, labelKey: 'systemHealth' },
-  { id: 'debug', icon: Bug, labelKey: 'debug' },
 ];
 
 export default function EvoLayout({
@@ -67,20 +64,9 @@ export default function EvoLayout({
         </nav>
 
         <div className="p-4 border-t border-white/6">
-          <div className="text-[10px] text-slate-600 uppercase tracking-wider mb-2">{t(locale, 'systemLabel')}</div>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between">
-              <span className="text-slate-500">{t(locale, 'agentStack')}</span>
-              <span className="text-emerald-400">{t(locale, 'online')}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">{t(locale, 'projectsView')}</span>
-              <span className="text-cyan-400">{projects.length}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">{t(locale, 'persistence')}</span>
-              <span className="text-emerald-400">{t(locale, 'ok')}</span>
-            </div>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[10px] text-emerald-400">{t(locale, 'allSystemsOperational')}</span>
           </div>
         </div>
       </aside>

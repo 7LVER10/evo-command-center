@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { useEvoStore } from '@/lib/evo/store';
-import { t } from '@/lib/evo/i18n';
+import { t, nicheLabel } from '@/lib/evo/i18n';
 import {
   TrendingUp, TrendingDown, AlertTriangle, CheckCircle,
   BarChart3, Globe, Layers, Activity, Zap, Target, Clock,
@@ -155,7 +155,7 @@ export default function EvoDashboard() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium text-white truncate">{p.name}</div>
-                <div className="text-[10px] text-slate-500">{p.country} · {p.niche}</div>
+                <div className="text-[10px] text-slate-500">{p.country} · {nicheLabel(locale, p.niche)}</div>
               </div>
               <div className="flex items-center gap-3 text-[10px]">
                 <span className="text-emerald-400">O:{Math.round(p.relevance * 100)}</span>
@@ -265,7 +265,7 @@ export default function EvoDashboard() {
             const avgRelevance = Math.round(nicheProjects.reduce((s, p) => s + p.relevance, 0) / nicheProjects.length * 100);
             return (
               <div key={n.niche} className="p-2 rounded-lg bg-white/3">
-                <div className="text-xs text-slate-300 truncate">{n.niche}</div>
+                <div className="text-xs text-slate-300 truncate">{nicheLabel(locale, n.niche)}</div>
                 <div className="flex items-center justify-between mt-1">
                   <span className="text-lg font-bold text-white">{n.count}</span>
                   <span className="text-[10px] text-violet-400">O:{avgRelevance}</span>
