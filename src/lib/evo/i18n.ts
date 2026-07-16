@@ -88,6 +88,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     scoreBreakdown: 'Score Breakdown',
     contextIntelligence: 'Context Intelligence',
     recommendedActions: 'Recommended Actions',
+    nextStep: 'Next Step',
     executiveSummary: 'Executive Summary',
     fullPipeline: 'Full Pipeline',
     analysisVolume: 'Analysis Volume',
@@ -121,6 +122,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     geo: 'Geo',
     niche: 'Niche',
     stage: 'Stage',
+    priority: 'Priority',
     // Health
     systemHealthSubtitle: 'System health and service status',
     allEndpointsResponding: 'All endpoints responding',
@@ -172,6 +174,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     copiedToClipboard: 'Copied to clipboard',
     // Loading
     loadingEvo: 'Loading EVO Command Center...',
+    // Dashboard
+    topProjects: 'Top Projects',
+    byRelevance: 'by relevance',
+    priorityBreakdown: 'Priority Breakdown',
+    avgRelevance: 'Avg Relevance',
     // Table headers
     action: 'Action',
     // Detail modal
@@ -264,6 +271,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     scoreBreakdown: 'Разбор скоров',
     contextIntelligence: 'Контекстная разведка',
     recommendedActions: 'Рекомендуемые действия',
+    nextStep: 'Следующий шаг',
     executiveSummary: 'Исполнительное резюме',
     fullPipeline: 'Полный конвейер',
     analysisVolume: 'Объем анализа',
@@ -297,6 +305,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     geo: 'Регион',
     niche: 'Ниша',
     stage: 'Этап',
+    priority: 'Приоритет',
     // Health
     systemHealthSubtitle: 'Состояние системы и сервисов',
     allEndpointsResponding: 'Все эндпоинты отвечают',
@@ -348,6 +357,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     copiedToClipboard: 'Скопировано в буфер обмена',
     // Loading
     loadingEvo: 'Загрузка EVO Command Center...',
+    // Dashboard
+    topProjects: 'Топ проектов',
+    byRelevance: 'по релевантности',
+    priorityBreakdown: 'Разбивка по приоритету',
+    avgRelevance: 'Средняя релевантность',
     // Table headers
     action: 'Действие',
     // Detail modal
@@ -440,6 +454,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     scoreBreakdown: 'Score-Aufschlüsselung',
     contextIntelligence: 'Kontext-Intelligenz',
     recommendedActions: 'Empfohlene Aktionen',
+    nextStep: 'Nächster Schritt',
     executiveSummary: 'Zusammenfassung',
     fullPipeline: 'Vollständige Pipeline',
     analysisVolume: 'Analysevolumen',
@@ -473,6 +488,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     geo: 'Region',
     niche: 'Nische',
     stage: 'Phase',
+    priority: 'Priorität',
     // Health
     systemHealthSubtitle: 'Systemzustand und Servicestatus',
     allEndpointsResponding: 'Alle Endpunkte antworten',
@@ -524,6 +540,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     copiedToClipboard: 'In die Zwischenablage kopiert',
     // Loading
     loadingEvo: 'EVO-Kommandozentrale wird geladen...',
+    // Dashboard
+    topProjects: 'Top-Projekte',
+    byRelevance: 'nach Relevanz',
+    priorityBreakdown: 'Prioritätsaufschlüsselung',
+    avgRelevance: 'Durchschn. Relevanz',
     // Table headers
     action: 'Aktion',
     // Detail modal
@@ -616,6 +637,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     scoreBreakdown: 'Puan Ayrıştırma',
     contextIntelligence: 'Bağlam İstihbaratı',
     recommendedActions: 'Önerilen Eylemler',
+    nextStep: 'Sonraki Adım',
     executiveSummary: 'Yönetici Özeti',
     fullPipeline: 'Tam Hat',
     analysisVolume: 'Analiz Hacmi',
@@ -649,6 +671,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     geo: 'Bölge',
     niche: 'Niş',
     stage: 'Aşama',
+    priority: 'Öncelik',
     // Health
     systemHealthSubtitle: 'Sistem durumu ve servis durumu',
     allEndpointsResponding: 'Tüm uç noktalar yanıt veriyor',
@@ -700,6 +723,11 @@ export const translations: Record<Locale, Record<string, string>> = {
     copiedToClipboard: 'Panoya kopyalandı',
     // Loading
     loadingEvo: 'EVO Komuta Merkezi yükleniyor...',
+    // Dashboard
+    topProjects: 'Üst Projeler',
+    byRelevance: 'ilgililiğe göre',
+    priorityBreakdown: 'Öncelik Dağılımı',
+    avgRelevance: 'Ort. İlgililik',
     // Table headers
     action: 'Eylem',
     // Detail modal

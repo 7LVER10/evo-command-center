@@ -19,6 +19,21 @@ const STAGE_KEYS: Record<string, string> = {
   'export-ready': 'stageExportReady',
 };
 
+const STAGE_COLORS: Record<string, string> = {
+  'intake': '#94a3b8',
+  'enrichment': '#60a5fa',
+  'scoring': '#a78bfa',
+  'synthesis': '#fbbf24',
+  'review': '#f97316',
+  'export-ready': '#10b981',
+};
+
+const PRIORITY_COLORS: Record<string, string> = {
+  'high': 'text-rose-400 bg-rose-400/10',
+  'medium': 'text-amber-400 bg-amber-400/10',
+  'low': 'text-slate-400 bg-slate-400/10',
+};
+
 const exportFormats: { key: ExportFormat; labelKey: string }[] = [
   { key: 'brief', labelKey: 'exportBrief' },
   { key: 'sales_brief', labelKey: 'exportSales' },
@@ -105,6 +120,7 @@ export default function EvoProjects() {
               <th className="text-left px-4 py-3">{t(locale, 'geo')}</th>
               <th className="text-left px-4 py-3">{t(locale, 'niche')}</th>
               <th className="text-left px-4 py-3">{t(locale, 'stage')}</th>
+              <th className="text-left px-4 py-3">{t(locale, 'priority')}</th>
               <th className="text-left px-4 py-3">{t(locale, 'opportunity')}</th>
               <th className="text-left px-4 py-3">{t(locale, 'risk')}</th>
               <th className="text-left px-4 py-3">{t(locale, 'margin')}</th>
@@ -117,6 +133,7 @@ export default function EvoProjects() {
               const opp = enriched?.scores?.opportunity?.value || Math.round(p.relevance * 100);
               const risk = enriched?.scores?.risk?.value || Math.round((1 - p.relevance) * 100);
               const margin = enriched?.scores?.margin?.value || Math.round(p.relevance * 85 + (p.id % 15));
+              const summary = locale === 'ru' ? p.summary_ru : locale === 'de' ? p.summary_de : locale === 'tr' ? p.summary_tr : p.summary_en;
 
               return (
                 <tr
@@ -126,13 +143,18 @@ export default function EvoProjects() {
                 >
                   <td className="px-4 py-3">
                     <div className="text-sm font-medium text-white">{p.name}</div>
-                    <div className="text-xs text-slate-500">{p.grp} · {p.country}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5 line-clamp-1">{summary}</div>
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-300">{p.country}</td>
                   <td className="px-4 py-3 text-sm text-slate-300">{p.niche}</td>
                   <td className="px-4 py-3">
-                    <span className="px-2 py-0.5 text-[10px] font-medium rounded bg-cyan-400/10 text-cyan-300">
+                    <span className="px-2 py-0.5 text-[10px] font-medium rounded" style={{ backgroundColor: `${STAGE_COLORS[p.stage]}15`, color: STAGE_COLORS[p.stage] }}>
                       {t(locale, STAGE_KEYS[p.stage])}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 text-[10px] font-medium rounded ${PRIORITY_COLORS[p.priority]}`}>
+                      {p.priority.toUpperCase()}
                     </span>
                   </td>
                   <td className="px-4 py-3">
@@ -156,7 +178,7 @@ export default function EvoProjects() {
                       <div className="w-16 h-1.5 bg-white/5 rounded-full overflow-hidden">
                         <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" style={{ width: `${margin}%` }} />
                       </div>
-                      <span className="text-xs text-cyan-400">{margin}</span>
+                      <span className="text-xs text-cyan-400">{margin}%</span>
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -216,14 +238,23 @@ function ProjectDetail({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-bold text-white">{project.name}</h2>
-              <span className="px-2 py-0.5 text-[10px] font-medium rounded bg-cyan-400/10 text-cyan-300">{project.stage}</span>
+              <span className="px-2 py-0.5 text-[10px] font-medium rounded" style={{ backgroundColor: `${STAGE_COLORS[project.stage]}15`, color: STAGE_COLORS[project.stage] }}>{t(locale, STAGE_KEYS[project.stage])}</span>
+              <span className={`px-2 py-0.5 text-[10px] font-medium rounded ${PRIORITY_COLORS[project.priority]}`}>{project.priority.toUpperCase()}</span>
             </div>
-            <div className="text-xs text-slate-500 mt-1">{project.id} · {project.grp} · {project.country}</div>
+            <div className="text-xs text-slate-500 mt-1">{project.country} · {project.niche} · {project.grp}</div>
           </div>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5"><X className="w-4 h-4 text-slate-400" /></button>
         </div>
 
         <div className="p-5 space-y-5">
+          {/* Summary */}
+          <div className="p-3 rounded-lg bg-cyan-400/5 border border-cyan-400/10">
+            <div className="text-xs text-cyan-400 font-medium mb-1">{t(locale, 'aiAnalysis')}</div>
+            <div className="text-sm text-slate-300">
+              {locale === 'ru' ? project.summary_ru : locale === 'de' ? project.summary_de : locale === 'tr' ? project.summary_tr : project.summary_en}
+            </div>
+          </div>
+
           {/* Scores */}
           <div>
             <h3 className="text-xs font-semibold text-slate-400 uppercase mb-3">{t(locale, 'scoreBreakdown')}</h3>
@@ -275,6 +306,19 @@ function ProjectDetail({
               </div>
               <div className="mt-2 p-3 rounded-lg bg-cyan-400/5 border border-cyan-400/10 text-sm text-cyan-300">
                 <strong>{t(locale, 'recommendation')}:</strong> {enriched.synthesis.recommendation}
+              </div>
+            </div>
+          )}
+
+          {/* Next Step */}
+          {enriched?.actions && enriched.actions.find(a => a.type === 'next_step') && (
+            <div className="p-3 rounded-lg bg-emerald-400/5 border border-emerald-400/10">
+              <div className="flex items-center gap-2 mb-1">
+                <Zap className="w-3 h-3 text-emerald-400" />
+                <span className="text-xs text-emerald-400 font-medium">{t(locale, 'nextStep')}</span>
+              </div>
+              <div className="text-sm text-emerald-300">
+                {enriched.actions.find(a => a.type === 'next_step')?.description}
               </div>
             </div>
           )}
