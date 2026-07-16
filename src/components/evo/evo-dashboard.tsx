@@ -133,8 +133,8 @@ export default function EvoDashboard() {
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-4 h-4 text-emerald-400" />
                   <div>
-                    <div className="text-sm text-white">{h.query || 'All projects'}</div>
-                    <div className="text-xs text-slate-500">{h.result_count} projects · O:{h.avg_opportunity} R:{h.avg_risk}</div>
+                    <div className="text-sm text-white">{h.query || t(locale, 'allProjects')}</div>
+                    <div className="text-xs text-slate-500">{h.result_count} {t(locale, 'projects')} · O:{h.avg_opportunity} R:{h.avg_risk}</div>
                   </div>
                 </div>
                 <div className="text-xs text-slate-500">{new Date(h.timestamp).toLocaleTimeString()}</div>

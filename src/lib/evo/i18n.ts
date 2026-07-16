@@ -170,6 +170,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     statusUpdateFailed: 'Failed to update status',
     exportedAs: 'Exported as {format}',
     copiedToClipboard: 'Copied to clipboard',
+    // Loading
+    loadingEvo: 'Loading EVO Command Center...',
     // Table headers
     action: 'Action',
     // Detail modal
@@ -344,6 +346,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     statusUpdateFailed: 'Не удалось обновить статус',
     exportedAs: 'Экспортировано как {format}',
     copiedToClipboard: 'Скопировано в буфер обмена',
+    // Loading
+    loadingEvo: 'Загрузка EVO Command Center...',
     // Table headers
     action: 'Действие',
     // Detail modal
@@ -518,6 +522,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     statusUpdateFailed: 'Status konnte nicht aktualisiert werden',
     exportedAs: 'Exportiert als {format}',
     copiedToClipboard: 'In die Zwischenablage kopiert',
+    // Loading
+    loadingEvo: 'EVO-Kommandozentrale wird geladen...',
     // Table headers
     action: 'Aktion',
     // Detail modal
@@ -692,6 +698,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     statusUpdateFailed: 'Durum güncellenemedi',
     exportedAs: '{format} olarak dışa aktarıldı',
     copiedToClipboard: 'Panoya kopyalandı',
+    // Loading
+    loadingEvo: 'EVO Komuta Merkezi yükleniyor...',
     // Table headers
     action: 'Eylem',
     // Detail modal
