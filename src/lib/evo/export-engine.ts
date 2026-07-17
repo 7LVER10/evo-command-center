@@ -41,7 +41,15 @@ function generateHtmlReport(project: EnrichedProject, locale: Locale): string {
   const risk = project.scores?.risk?.value || Math.round((1 - project.relevance) * 100);
   const margin = project.scores?.margin?.value || Math.round(project.relevance * 85 + (project.id % 15));
   const budget = locale === 'ru' ? `${(project.relevance * 1200).toFixed(0)} млн руб.` : locale === 'de' ? `€${(project.relevance * 14).toFixed(0)}M` : `$${(project.relevance * 15).toFixed(0)}M`;
-  const summary = locale === 'ru' ? project.summary_ru : locale === 'de' ? project.summary_de : locale === 'tr' ? project.summary_tr : project.summary_en;
+
+  // Project-specific summary with deterministic fallback
+  const projectSummary = locale === 'ru' ? project.summary_ru
+    : locale === 'de' ? project.summary_de
+    : locale === 'tr' ? project.summary_tr
+    : project.summary_en;
+  const englishFallback = project.summary_en;
+  const displaySummary = projectSummary || englishFallback || l('reportSummaryUnavailable');
+
   const confidence = project.synthesis?.confidence ? `${(project.synthesis.confidence * 100).toFixed(1)}%` : '—';
   const keyFactors = project.synthesis?.key_factors || [];
   const recommendation = project.synthesis?.recommendation || '';
@@ -119,7 +127,7 @@ function generateHtmlReport(project: EnrichedProject, locale: Locale): string {
   <div class="section">
     <h2>${l('reportSourceSummary')}</h2>
     <p>${l('reportSourceDesc')}</p>
-    ${summary ? `<div class="summary-block">${summary}</div>` : ''}
+    ${displaySummary ? `<div class="summary-block">${displaySummary}</div>` : ''}
   </div>
 
   <div class="section">
@@ -144,7 +152,7 @@ function generateHtmlReport(project: EnrichedProject, locale: Locale): string {
 
   <div class="section page-break">
     <h2>${l('reportClientSummary')}</h2>
-    <p>${l('reportSummaryDesc')}</p>
+    <p>${displaySummary}</p>
     ${recommendation ? `<div class="recommendation"><strong>${l('recommendation')}:</strong> ${recommendation}</div>` : ''}
     ${nextStep ? `<div class="next-step"><strong>${l('nextStep')}:</strong> ${nextStep}</div>` : ''}
   </div>
