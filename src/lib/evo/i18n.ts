@@ -75,6 +75,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     noLiveExternalIntel: 'No live external intelligence feeds connected',
     syntheticDataNote: 'Analysis uses synthetic scoring and AI-generated synthesis',
     snapshotBasis: 'Data represents a point-in-time analysis snapshot',
+    analysisSnapshotTime: 'Analysis snapshot taken at',
     limitedToInputs: 'Scope limited to available project inputs and agent capabilities',
     // HTML Report
     reportTitle: 'EVO Client Report',
@@ -82,6 +83,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     reportNiche: 'Niche',
     reportMarket: 'Market',
     reportExportDate: 'Export Date',
+    reportAnalysisDate: 'Analysis Date',
     reportLanguage: 'Language',
     reportSourceSummary: 'Source Data Summary',
     reportSourceDesc: 'This report is generated from the EVO B2B Intelligence platform analysis. Data includes project profiling, AI-driven scoring, competitor context, and synthesis recommendations based on available project inputs.',
@@ -332,6 +334,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     noLiveExternalIntel: 'Подключение к внешним источникам данных не установлено',
     syntheticDataNote: 'Анализ использует синтетический скоринг и AI-синтез',
     snapshotBasis: 'Данные представляют снимок анализа на текущий момент',
+    analysisSnapshotTime: 'Снимок анализа создан',
     limitedToInputs: 'Охват ограничен доступными входными данными проекта и возможностями агентов',
     // HTML Report
     reportTitle: 'EVO Отчёт для клиента',
@@ -339,6 +342,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     reportNiche: 'Ниша',
     reportMarket: 'Рынок',
     reportExportDate: 'Дата экспорта',
+    reportAnalysisDate: 'Дата анализа',
     reportLanguage: 'Язык',
     reportSourceSummary: 'Исходные данные',
     reportSourceDesc: 'Отчёт сформирован на основе анализа платформы EVO B2B Intelligence. Данные включают профилирование проектов, AI-скоринг, конкурентный контекст и рекомендации на основе доступных входных данных проекта.',
@@ -589,6 +593,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     noLiveExternalIntel: 'Keine Live-Externdatenquellen verbunden',
     syntheticDataNote: 'Analyse verwendet synthetisches Scoring und KI-generierte Synthese',
     snapshotBasis: 'Daten stellen einen zeitpunktbezogenen Analysesnapshot dar',
+    analysisSnapshotTime: 'Analysesnapshot erstellt am',
     limitedToInputs: 'Umfang begrenzt auf verfügbare Projekteingaben und Agentenkapazitäten',
     // HTML Report
     reportTitle: 'EVO Kundenbericht',
@@ -596,6 +601,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     reportNiche: 'Nische',
     reportMarket: 'Markt',
     reportExportDate: 'Exportdatum',
+    reportAnalysisDate: 'Analysedatum',
     reportLanguage: 'Sprache',
     reportSourceSummary: 'Quellendaten',
     reportSourceDesc: 'Dieser Bericht wurde auf Basis der EVO B2B Intelligence-Plattform-Analyse erstellt. Die Daten umfassen Projektprofiling, KI-gestütztes Scoring, Wettbewerbskontext und Synthese-Empfehlungen basierend auf den verfügbaren Projekteingaben.',
@@ -846,6 +852,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     noLiveExternalIntel: 'Canlı harici veri kaynağı bağlantısı yok',
     syntheticDataNote: 'Analiz sentetik puanlama ve YZ tarafından üretilen sentez kullanır',
     snapshotBasis: 'Veriler zamana bağlı bir analiz anlık görüntüsünü temsil eder',
+    analysisSnapshotTime: 'Analiz anlık görüntüsü oluşturulma',
     limitedToInputs: 'Kapsam mevcut proje girdileri ve agent yetenekleri ile sınırlıdır',
     // HTML Report
     reportTitle: 'EVO Müşteri Raporu',
@@ -853,6 +860,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     reportNiche: 'Niş',
     reportMarket: 'Pazar',
     reportExportDate: 'Dışa Aktarma Tarihi',
+    reportAnalysisDate: 'Analiz Tarihi',
     reportLanguage: 'Dil',
     reportSourceSummary: 'Kaynak Verileri',
     reportSourceDesc: 'Bu rapor, EVO B2B Intelligence platform analizine dayanılarak oluşturulmuştur. Veriler, proje profilleme, yapay zeka destekli puanlama, rekabet bağlamı ve mevcut proje girdilerine dayalı sentez önerilerini içerir.',

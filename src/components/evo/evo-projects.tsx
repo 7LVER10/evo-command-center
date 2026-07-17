@@ -310,6 +310,14 @@ function ProjectDetail({
                     <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />
                     <span className="text-xs text-slate-300">{t(locale, 'snapshotBasis')}</span>
                   </div>
+                  {project.updated_at && (
+                    <div className="flex items-start gap-2 p-2 rounded bg-cyan-400/5 border border-cyan-400/10">
+                      <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                      <span className="text-xs text-cyan-300">
+                        {t(locale, 'analysisSnapshotTime')} {new Date(project.updated_at).toLocaleDateString(locale === 'ru' ? 'ru-RU' : locale === 'de' ? 'de-DE' : locale === 'tr' ? 'tr-TR' : 'en-US')}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 

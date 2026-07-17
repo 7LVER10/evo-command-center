@@ -50,6 +50,11 @@ function generateHtmlReport(project: EnrichedProject, locale: Locale): string {
   const englishFallback = project.summary_en;
   const displaySummary = projectSummary || englishFallback || l('reportSummaryUnavailable');
 
+  // Analysis timestamp from project data (honest source)
+  const analysisDate = project.updated_at
+    ? new Date(project.updated_at).toLocaleDateString(locale === 'ru' ? 'ru-RU' : locale === 'de' ? 'de-DE' : locale === 'tr' ? 'tr-TR' : 'en-US')
+    : dateStr;
+
   const confidence = project.synthesis?.confidence ? `${(project.synthesis.confidence * 100).toFixed(1)}%` : '—';
   const keyFactors = project.synthesis?.key_factors || [];
   const recommendation = project.synthesis?.recommendation || '';
@@ -119,9 +124,9 @@ function generateHtmlReport(project: EnrichedProject, locale: Locale): string {
     <div class="meta-item"><div class="meta-label">${l('reportProject')}</div><div class="meta-value">${project.name}</div></div>
     <div class="meta-item"><div class="meta-label">${l('reportNiche')}</div><div class="meta-value">${nicheDisplay}</div></div>
     <div class="meta-item"><div class="meta-label">${l('reportMarket')}</div><div class="meta-value">${project.country}</div></div>
+    <div class="meta-item"><div class="meta-label">${l('reportAnalysisDate')}</div><div class="meta-value">${analysisDate}</div></div>
     <div class="meta-item"><div class="meta-label">${l('reportExportDate')}</div><div class="meta-value">${dateStr}</div></div>
     <div class="meta-item"><div class="meta-label">${l('reportLanguage')}</div><div class="meta-value">${langLabel}</div></div>
-    <div class="meta-item"><div class="meta-label">${l('reportBudget')}</div><div class="meta-value">${budget}</div></div>
   </div>
 
   <div class="section">
