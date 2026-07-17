@@ -18,8 +18,6 @@ const navItems = [
   { id: 'exports', icon: Download, labelKey: 'exports' },
 ];
 
-const OWNER_PASSWORD = 'evo2024';
-
 export default function EvoLayout({
   children,
   activeView,
@@ -34,16 +32,39 @@ export default function EvoLayout({
   const [showOwnerPanel, setShowOwnerPanel] = useState(false);
   const [ownerPassword, setOwnerPassword] = useState('');
   const [ownerError, setOwnerError] = useState(false);
+  const [ownerLoading, setOwnerLoading] = useState(false);
   const [ownerTab, setOwnerTab] = useState<'health' | 'debug'>('health');
 
-  const handleOwnerSubmit = () => {
-    if (ownerPassword === OWNER_PASSWORD) {
-      setShowOwnerGate(false);
-      setShowOwnerPanel(true);
-      setOwnerPassword('');
-      setOwnerError(false);
-    } else {
+  const handleOwnerSubmit = async () => {
+    if (!ownerPassword.trim()) {
       setOwnerError(true);
+      return;
+    }
+
+    setOwnerLoading(true);
+    setOwnerError(false);
+
+    try {
+      const response = await fetch('/api/owner/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: ownerPassword }),
+      });
+
+      const data = await response.json();
+
+      if (data.valid) {
+        setShowOwnerGate(false);
+        setShowOwnerPanel(true);
+        setOwnerPassword('');
+        setOwnerError(false);
+      } else {
+        setOwnerError(true);
+      }
+    } catch {
+      setOwnerError(true);
+    } finally {
+      setOwnerLoading(false);
     }
   };
 
@@ -137,9 +158,10 @@ export default function EvoLayout({
               )}
               <button
                 onClick={handleOwnerSubmit}
-                className="w-full px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-black hover:shadow-lg hover:shadow-cyan-500/20 transition"
+                disabled={ownerLoading}
+                className="w-full px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-black hover:shadow-lg hover:shadow-cyan-500/20 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {t(locale, 'ownerGateSubmit')}
+                {ownerLoading ? '...' : t(locale, 'ownerGateSubmit')}
               </button>
             </div>
           </div>
