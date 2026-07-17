@@ -49,7 +49,8 @@ export default function EvoProjects() {
     filterGeo, filterNiche, filterStage,
     setFilterGeo, setFilterNiche, setFilterStage,
     selectedProject, setSelectedProject, showDetail, setShowDetail,
-    exportEnriched, copyExport
+    exportEnriched, copyExport, runAnalysis, analysisStatus,
+    analyzedCount, analyzedAt
   } = useEvoStore();
 
   const enrichedMap = useMemo(() => {
@@ -78,7 +79,7 @@ export default function EvoProjects() {
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Filters + Analyze */}
       <div className="flex items-center gap-3">
         <select
           value={filterGeo}
@@ -110,7 +111,25 @@ export default function EvoProjects() {
           <option value="export-ready">{t(locale, 'stageExportReady')}</option>
         </select>
         <span className="text-xs text-slate-500">{t(locale, 'resultsCount').replace('{n}', String(filtered.length))}</span>
-        <span className="text-[10px] text-slate-600 ml-2">{t(locale, 'searchFiltersHint')}</span>
+        <div className="flex-1" />
+        {analyzedCount > 0 && analyzedAt && (
+          <div className="text-[10px] text-cyan-400/80 bg-cyan-400/5 border border-cyan-400/10 rounded px-2 py-1">
+            {t(locale, 'analyzeTimestamp')
+              .replace('{n}', String(analyzedCount))
+              .replace('{time}', new Date(analyzedAt).toLocaleTimeString(locale === 'ru' ? 'ru-RU' : locale === 'de' ? 'de-DE' : locale === 'tr' ? 'tr-TR' : 'en-US', { hour: '2-digit', minute: '2-digit' }))}
+          </div>
+        )}
+        <button
+          onClick={runAnalysis}
+          disabled={analysisStatus === 'loading'}
+          className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+            analysisStatus === 'loading'
+              ? 'bg-amber-500/20 text-amber-300'
+              : 'bg-gradient-to-r from-cyan-500 to-blue-600 text-black hover:shadow-lg hover:shadow-cyan-500/20'
+          }`}
+        >
+          {analysisStatus === 'loading' ? t(locale, 'analyzeRunning') : t(locale, 'analyzeButton')}
+        </button>
       </div>
 
       {/* Table */}
