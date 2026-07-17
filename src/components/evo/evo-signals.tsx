@@ -27,7 +27,7 @@ function getDeltaNum(signal: MarketSignal): number {
 }
 
 export default function EvoSignals() {
-  const { locale, signals, enrichedProjects } = useEvoStore();
+  const { locale, signals, enrichedProjects, filterGeo, filterNiche, filterStage, searchQuery } = useEvoStore();
 
   const geoSignals = signals.filter(s => s.type === 'geo');
   const nicheSignals = signals.filter(s => s.type === 'niche');
@@ -51,6 +51,19 @@ export default function EvoSignals() {
     ? signals.reduce((sum, s) => sum + s.confidence, 0) / signals.length
     : 0;
 
+  // Determine actual current focus from filter context
+  const hasGeoFilter = filterGeo !== 'all';
+  const hasNicheFilter = filterNiche !== 'all';
+  const hasStageFilter = filterStage !== 'all';
+  const hasSearchQuery = searchQuery.trim().length > 0;
+  const isBroadFocus = !hasGeoFilter && !hasNicheFilter && !hasStageFilter && !hasSearchQuery;
+
+  // Get display values for active filters
+  const activeGeo = hasGeoFilter ? filterGeo : null;
+  const activeNiche = hasNicheFilter ? nicheLabel(locale, filterNiche) : null;
+  const activeStage = hasStageFilter ? filterStage : null;
+
+  // Get unique values from enriched projects as fallback context
   const countries = [...new Set(enrichedProjects.map(p => p.country))];
   const niches = [...new Set(enrichedProjects.map(p => p.niche))];
 
@@ -187,23 +200,95 @@ export default function EvoSignals() {
 
       {signals.length > 0 ? (
         <>
-          {/* Market Focus */}
+          {/* Market Focus — bound to actual current filter context */}
           <div className="bg-gradient-to-br from-[#161923]/70 to-[#0f1119]/50 backdrop-blur-xl border border-white/6 rounded-xl p-5">
             <div className="flex items-center gap-2 mb-3">
               <Target className="w-4 h-4 text-cyan-400" />
               <h2 className="text-sm font-semibold text-white">{t(locale, 'marketFocus')}</h2>
             </div>
             <p className="text-xs text-slate-500 mb-3">{t(locale, 'marketFocusDesc')}</p>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-lg bg-white/3">
-                <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">{t(locale, 'geo')}</div>
-                <div className="text-sm text-white">{countries.length > 0 ? countries.join(', ') : '—'}</div>
+            {isBroadFocus ? (
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 p-2 rounded bg-white/3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />
+                  <span className="text-xs text-slate-300">
+                    {locale === 'ru' ? 'Текущий фокус: полный портфель — без узких фильтров по рынку или нише'
+                      : locale === 'de' ? 'Aktueller Fokus: gesamtes Portfolio — keine spezifischen Markt- oder Nischenfilter'
+                      : locale === 'tr' ? 'Mevcut odak: tam portföy — pazar veya niş filtresi uygulanmadı'
+                      : 'Current focus: full portfolio — no specific market or niche filter applied'}
+                  </span>
+                </div>
+                {countries.length > 0 && (
+                  <div className="flex items-start gap-2 p-2 rounded bg-white/3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-slate-300">
+                      {locale === 'ru' ? `Географии в анализе: ${countries.join(', ')}`
+                        : locale === 'de' ? `Geografien in Analyse: ${countries.join(', ')}`
+                        : locale === 'tr' ? `Analizdeki coğrafyalar: ${countries.join(', ')}`
+                        : `Geographies in analysis: ${countries.join(', ')}`}
+                    </span>
+                  </div>
+                )}
+                {niches.length > 0 && (
+                  <div className="flex items-start gap-2 p-2 rounded bg-white/3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-slate-300">
+                      {locale === 'ru' ? `Ниши в анализе: ${niches.map(n => nicheLabel(locale, n)).join(', ')}`
+                        : locale === 'de' ? `Nischen in Analyse: ${niches.map(n => nicheLabel(locale, n)).join(', ')}`
+                        : locale === 'tr' ? `Analizdeki nişler: ${niches.map(n => nicheLabel(locale, n)).join(', ')}`
+                        : `Niches in analysis: ${niches.map(n => nicheLabel(locale, n)).join(', ')}`}
+                    </span>
+                  </div>
+                )}
               </div>
-              <div className="p-3 rounded-lg bg-white/3">
-                <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">{t(locale, 'niche')}</div>
-                <div className="text-sm text-white">{niches.length > 0 ? niches.map(n => nicheLabel(locale, n)).join(', ') : '—'}</div>
+            ) : (
+              <div className="space-y-2">
+                {activeGeo && (
+                  <div className="flex items-start gap-2 p-2 rounded bg-cyan-400/5 border border-cyan-400/10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-cyan-300">
+                      {locale === 'ru' ? `Рынок: ${activeGeo}`
+                        : locale === 'de' ? `Markt: ${activeGeo}`
+                        : locale === 'tr' ? `Pazar: ${activeGeo}`
+                        : `Market: ${activeGeo}`}
+                    </span>
+                  </div>
+                )}
+                {activeNiche && (
+                  <div className="flex items-start gap-2 p-2 rounded bg-cyan-400/5 border border-cyan-400/10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-cyan-300">
+                      {locale === 'ru' ? `Ниша: ${activeNiche}`
+                        : locale === 'de' ? `Nische: ${activeNiche}`
+                        : locale === 'tr' ? `Niş: ${activeNiche}`
+                        : `Niche: ${activeNiche}`}
+                    </span>
+                  </div>
+                )}
+                {activeStage && (
+                  <div className="flex items-start gap-2 p-2 rounded bg-cyan-400/5 border border-cyan-400/10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-cyan-300">
+                      {locale === 'ru' ? `Этап: ${activeStage}`
+                        : locale === 'de' ? `Phase: ${activeStage}`
+                        : locale === 'tr' ? `Aşama: ${activeStage}`
+                        : `Stage: ${activeStage}`}
+                    </span>
+                  </div>
+                )}
+                {hasSearchQuery && (
+                  <div className="flex items-start gap-2 p-2 rounded bg-cyan-400/5 border border-cyan-400/10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-cyan-300">
+                      {locale === 'ru' ? `Фильтр: "${searchQuery}"`
+                        : locale === 'de' ? `Filter: "${searchQuery}"`
+                        : locale === 'tr' ? `Filtre: "${searchQuery}"`
+                        : `Filter: "${searchQuery}"`}
+                    </span>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
           </div>
 
           {/* Signal Summary — specific, data-backed */}
