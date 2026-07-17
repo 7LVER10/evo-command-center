@@ -69,9 +69,11 @@ export interface EvoState {
   enrichedProjects: EnrichedProject[];
   signals: MarketSignal[];
   analysisHistory: AnalysisHistoryEntry[];
+  activeView: string;
   showHistory: boolean;
   showDetail: boolean;
   toasts: Toast[];
+  setActiveView: (view: string) => void;
   setLocale: (locale: Locale) => void;
   setTheme: (theme: Theme) => void;
   setSearchQuery: (query: string) => void;

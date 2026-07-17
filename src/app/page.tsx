@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useEvoStore } from '@/lib/evo/store';
 import { t } from '@/lib/evo/i18n';
 import EvoLayout from '@/components/evo/evo-layout';
@@ -14,8 +14,7 @@ import EvoHealth from '@/components/evo/evo-health';
 import EvoDebug from '@/components/evo/evo-debug';
 
 export default function Home() {
-  const { loadProjects, loadHistory, projectsLoading, locale } = useEvoStore();
-  const [activeView, setActiveView] = useState('dashboard');
+  const { loadProjects, loadHistory, projectsLoading, locale, activeView, setActiveView } = useEvoStore();
 
   useEffect(() => {
     loadProjects();

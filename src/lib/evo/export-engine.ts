@@ -50,6 +50,8 @@ function generateHtmlReport(project: EnrichedProject, locale: Locale): string {
   const englishFallback = project.summary_en;
   const displaySummary = projectSummary || englishFallback || l('reportSummaryUnavailable');
 
+  const dateStr = new Date().toLocaleDateString(locale === 'ru' ? 'ru-RU' : locale === 'de' ? 'de-DE' : locale === 'tr' ? 'tr-TR' : 'en-US');
+
   // Analysis timestamp from project data (honest source)
   const analysisDate = project.updated_at
     ? new Date(project.updated_at).toLocaleDateString(locale === 'ru' ? 'ru-RU' : locale === 'de' ? 'de-DE' : locale === 'tr' ? 'tr-TR' : 'en-US')
@@ -59,7 +61,6 @@ function generateHtmlReport(project: EnrichedProject, locale: Locale): string {
   const keyFactors = project.synthesis?.key_factors || [];
   const recommendation = project.synthesis?.recommendation || '';
   const nextStep = project.actions?.find(a => a.type === 'next_step')?.description || '';
-  const dateStr = new Date().toLocaleDateString(locale === 'ru' ? 'ru-RU' : locale === 'de' ? 'de-DE' : locale === 'tr' ? 'tr-TR' : 'en-US');
   const langLabel = locale === 'ru' ? 'Русский' : locale === 'de' ? 'Deutsch' : locale === 'tr' ? 'Türkçe' : 'English';
   const nicheDisplay = nicheLabel(locale, project.niche);
 

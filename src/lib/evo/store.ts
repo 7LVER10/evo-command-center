@@ -46,9 +46,12 @@ export const useEvoStore = create<EvoState>((set, get) => ({
   enrichedProjects: [],
   signals: [],
   analysisHistory: [],
+  activeView: 'dashboard',
   showHistory: false,
   showDetail: false,
   toasts: [],
+
+  setActiveView: (view) => set({ activeView: view }),
 
   setLocale: (locale) => {
     set({ locale });
