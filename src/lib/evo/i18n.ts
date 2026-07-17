@@ -183,6 +183,14 @@ export const translations: Record<Locale, Record<string, string>> = {
     action: 'Action',
     // Detail modal
     na: 'N/A',
+    // Owner access
+    ownerAccess: 'Settings',
+    ownerGateTitle: 'Owner Access',
+    ownerGateDescription: 'Enter owner credentials to access internal controls.',
+    ownerGatePlaceholder: 'Password',
+    ownerGateError: 'Invalid credentials.',
+    ownerGateSubmit: 'Access',
+    ownerPanelTitle: 'System Console',
   },
   ru: {
     commandCenter: 'EVO КОМАНДНЫЙ ЦЕНТР',
@@ -366,6 +374,14 @@ export const translations: Record<Locale, Record<string, string>> = {
     action: 'Действие',
     // Detail modal
     na: 'Н/Д',
+    // Owner access
+    ownerAccess: 'Настройки',
+    ownerGateTitle: 'Доступ владельца',
+    ownerGateDescription: 'Введите учётные данные владельца для доступа к внутренним настройкам.',
+    ownerGatePlaceholder: 'Пароль',
+    ownerGateError: 'Неверные учётные данные.',
+    ownerGateSubmit: 'Войти',
+    ownerPanelTitle: 'Системная консоль',
   },
   de: {
     commandCenter: 'EVO KOMMANDOZENTRALE',
@@ -549,6 +565,14 @@ export const translations: Record<Locale, Record<string, string>> = {
     action: 'Aktion',
     // Detail modal
     na: 'k. A.',
+    // Owner access
+    ownerAccess: 'Einstellungen',
+    ownerGateTitle: 'Inhaberzugang',
+    ownerGateDescription: 'Geben Sie Inhaberdaten ein, um auf interne Kontrollen zuzugreifen.',
+    ownerGatePlaceholder: 'Passwort',
+    ownerGateError: 'Ungültige Anmeldedaten.',
+    ownerGateSubmit: 'Zugang',
+    ownerPanelTitle: 'Systemkonsole',
   },
   tr: {
     commandCenter: 'EVO KOMUTA MERKEZİ',
@@ -732,6 +756,14 @@ export const translations: Record<Locale, Record<string, string>> = {
     action: 'Eylem',
     // Detail modal
     na: 'Yok',
+    // Owner access
+    ownerAccess: 'Ayarlar',
+    ownerGateTitle: 'Sahip Erişimi',
+    ownerGateDescription: 'Dahili kontrollere erişmek için sahip bilgilerinizi girin.',
+    ownerGatePlaceholder: 'Şifre',
+    ownerGateError: 'Geçersiz bilgiler.',
+    ownerGateSubmit: 'Eriş',
+    ownerPanelTitle: 'Sistem Konsolu',
   },
 };
 
