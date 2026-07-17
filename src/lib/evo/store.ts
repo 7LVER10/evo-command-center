@@ -47,7 +47,6 @@ export const useEvoStore = create<EvoState>((set, get) => ({
   signals: [],
   analysisHistory: [],
   activeView: 'dashboard',
-  showHistory: false,
   showDetail: false,
   toasts: [],
 
@@ -66,7 +65,6 @@ export const useEvoStore = create<EvoState>((set, get) => ({
   setFilterNiche: (niche) => set({ filterNiche: niche }),
   setFilterStage: (stage) => set({ filterStage: stage }),
   setSelectedProject: (project) => set({ selectedProject: project, showDetail: !!project }),
-  setShowHistory: (show) => set({ showHistory: show }),
   setShowDetail: (show) => set({ showDetail: show }),
 
   addToast: (toast) => {

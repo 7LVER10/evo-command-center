@@ -70,7 +70,6 @@ export interface EvoState {
   signals: MarketSignal[];
   analysisHistory: AnalysisHistoryEntry[];
   activeView: string;
-  showHistory: boolean;
   showDetail: boolean;
   toasts: Toast[];
   setActiveView: (view: string) => void;
@@ -81,7 +80,6 @@ export interface EvoState {
   setFilterNiche: (niche: string) => void;
   setFilterStage: (stage: string) => void;
   setSelectedProject: (project: Project | null) => void;
-  setShowHistory: (show: boolean) => void;
   setShowDetail: (show: boolean) => void;
   addToast: (toast: Toast) => void;
   runAnalysis: () => Promise<void>;

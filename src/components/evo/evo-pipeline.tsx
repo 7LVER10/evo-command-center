@@ -3,25 +3,8 @@
 import { useMemo } from 'react';
 import { useEvoStore } from '@/lib/evo/store';
 import { t, nicheLabel } from '@/lib/evo/i18n';
+import { STAGES, STAGE_COLORS, STAGE_KEYS } from '@/lib/evo/constants';
 import { GitBranch, ChevronRight } from 'lucide-react';
-
-const STAGES = ['intake', 'enrichment', 'scoring', 'synthesis', 'review', 'export-ready'];
-const STAGE_KEYS: Record<string, string> = {
-  'intake': 'stageIntake',
-  'enrichment': 'stageEnrichment',
-  'scoring': 'stageScoring',
-  'synthesis': 'stageSynthesis',
-  'review': 'stageReview',
-  'export-ready': 'stageExportReady',
-};
-const STAGE_COLORS: Record<string, string> = {
-  'intake': '#94a3b8',
-  'enrichment': '#60a5fa',
-  'scoring': '#a78bfa',
-  'synthesis': '#fbbf24',
-  'review': '#f97316',
-  'export-ready': '#10b981',
-};
 
 export default function EvoPipeline() {
   const { locale, projects } = useEvoStore();

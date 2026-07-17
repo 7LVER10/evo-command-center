@@ -2,40 +2,40 @@
 
 import { useEvoStore } from '@/lib/evo/store';
 import { t, nicheLabel } from '@/lib/evo/i18n';
-import { Download, FileText, Printer } from 'lucide-react';
+import { Printer, Copy } from 'lucide-react';
+
+const exportFormats = ['brief', 'sales_brief', 'crm_note', 'telegram'];
+const locales = ['en', 'ru', 'de', 'tr'];
 
 export default function EvoExports() {
-  const { locale, enrichedProjects, exportEnriched } = useEvoStore();
-
-  const formats = ['brief', 'sales_brief', 'crm_note', 'telegram', 'json'];
-  const locales = ['en', 'ru', 'de', 'tr'];
+  const { locale, enrichedProjects, exportEnriched, copyExport } = useEvoStore();
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold text-white">{t(locale, 'exportsView')}</h1>
-        <p className="text-sm text-slate-500">{t(locale, 'exportMatrix').replace('{formats}', String(formats.length)).replace('{locales}', String(locales.length))}</p>
+        <p className="text-sm text-slate-500">{t(locale, 'exportMatrix').replace('{formats}', String(exportFormats.length)).replace('{locales}', String(locales.length))}</p>
       </div>
 
       <div className="bg-gradient-to-br from-[#161923]/70 to-[#0f1119]/50 backdrop-blur-xl border border-white/6 rounded-xl p-4">
-        <div className="grid grid-cols-6 gap-2 text-xs">
+        <div className="grid grid-cols-5 gap-2 text-xs">
           <div className="font-medium text-slate-400">{t(locale, 'format')}</div>
-          {locales.map(l => (
+          {locales.slice(0, 2).map(l => (
             <div key={l} className="font-medium text-slate-400 text-center">{l.toUpperCase()}</div>
           ))}
           <div className="font-medium text-slate-400">{t(locale, 'status')}</div>
+          <div className="font-medium text-slate-400">{t(locale, 'action')}</div>
 
-          {formats.map(f => (
+          {exportFormats.map(f => (
             <div key={f} className="contents">
-              <div className="text-white capitalize">{f.replace('_', ' ')}</div>
-              {locales.map(l => (
+              <div className="text-white text-xs">{t(locale, `export${f.charAt(0).toUpperCase() + f.slice(1).replace('_', '')}`) || f.replace('_', ' ')}</div>
+              {locales.slice(0, 2).map(l => (
                 <div key={`${f}-${l}`} className="text-center">
                   <span className="px-2 py-0.5 text-[10px] rounded bg-emerald-400/10 text-emerald-300">{t(locale, 'ready')}</span>
                 </div>
               ))}
-              <div className="text-center">
-                <FileText className="w-3 h-3 text-emerald-400 mx-auto" />
-              </div>
+              <div className="text-center text-xs text-emerald-400">4/4</div>
+              <div className="text-center text-xs text-cyan-400">{t(locale, 'copy')}</div>
             </div>
           ))}
         </div>
@@ -61,10 +61,13 @@ export default function EvoExports() {
                     <Printer className="w-3 h-3" />
                     {t(locale, 'exportHtmlReport')}
                   </button>
-                  <Download
-                    className="w-4 h-4 text-cyan-400 cursor-pointer hover:text-cyan-300"
-                    onClick={() => exportEnriched(p, 'brief')}
-                  />
+                  <button
+                    onClick={() => copyExport(p, 'brief')}
+                    className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded bg-white/5 text-slate-400 hover:bg-white/10 transition"
+                    title={t(locale, 'copyBrief')}
+                  >
+                    <Copy className="w-3 h-3" />
+                  </button>
                 </div>
               </div>
             ))}

@@ -1,4 +1,4 @@
-import { Project, Locale } from './types';
+import { Project, Locale, MarketSignal } from './types';
 import {
   AgentOutput, SynthesisOutput,
   ProjectScores, ScoreBreakdown, SourceSignal,
@@ -279,16 +279,6 @@ export function runAgentStack(project: Project, locale: Locale) {
 }
 
 // Real signals derived from agent outputs and project metrics
-export interface MarketSignal {
-  id: string;
-  type: 'geo' | 'niche' | 'competitor';
-  label: string;
-  velocity: number;
-  confidence: number;
-  direction: 'up' | 'down' | 'stable';
-  delta: string;
-}
-
 export function generateSignals(projects: Project[], enrichedProjects: EnrichedProject[]): MarketSignal[] {
   const signals: MarketSignal[] = [];
   let id = 1;

@@ -3,7 +3,7 @@
 import { useEvoStore } from '@/lib/evo/store';
 import { t, nicheLabel } from '@/lib/evo/i18n';
 import { Radio, TrendingUp, TrendingDown, Minus, AlertCircle, Target, Shield, Zap, Eye } from 'lucide-react';
-import { MarketSignal } from '@/lib/evo/agent-engine';
+import { MarketSignal } from '@/lib/evo/types';
 
 function getSignalLabel(locale: string, signal: MarketSignal): string {
   const typeLabel = signal.type === 'geo' ? (locale === 'ru' ? 'Рынок' : locale === 'de' ? 'Markt' : locale === 'tr' ? 'Pazar' : 'Market')

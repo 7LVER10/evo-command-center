@@ -12,7 +12,7 @@ export default function EvoHealth() {
     { name: t(locale, 'agentStack'), status: 'ok', value: '6/6', detail: t(locale, 'allAgentsOperational') },
     { name: 'Database', status: 'ok', value: 'SQLite', detail: t(locale, 'projectsLoaded').replace('{n}', String(projects.length)) },
     { name: t(locale, 'persistence'), status: 'ok', value: 'localStorage', detail: t(locale, 'historyAdapterActive') },
-    { name: t(locale, 'exportEngine'), status: 'ok', value: '5 formats', detail: t(locale, 'exportFormatsDetail') },
+    { name: t(locale, 'exportEngine'), status: 'ok', value: '4 formats', detail: t(locale, 'exportFormatsDetail') },
     { name: 'i18n', status: 'ok', value: '4 locales', detail: t(locale, 'localesDetail') },
     { name: t(locale, 'analysisQueue'), status: enrichedProjects.length > 0 ? 'ok' : 'warn', value: `${enrichedProjects.length} enriched`, detail: enrichedProjects.length > 0 ? t(locale, 'enrichmentActive') : t(locale, 'enrichmentRunFirst') },
     { name: t(locale, 'history'), status: 'ok', value: `${analysisHistory.length} entries`, detail: t(locale, 'localStoragePersistence') },
@@ -62,7 +62,7 @@ export default function EvoHealth() {
             <div className="text-xs text-slate-500">{t(locale, 'analysisRuns')}</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-amber-400">5</div>
+            <div className="text-2xl font-bold text-amber-400">4</div>
             <div className="text-xs text-slate-500">{t(locale, 'exportFormats')}</div>
           </div>
         </div>

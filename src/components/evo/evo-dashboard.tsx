@@ -3,33 +3,11 @@
 import { useMemo } from 'react';
 import { useEvoStore } from '@/lib/evo/store';
 import { t, nicheLabel } from '@/lib/evo/i18n';
+import { STAGE_COLORS, PRIORITY_COLORS } from '@/lib/evo/constants';
 import {
   TrendingUp, TrendingDown, AlertTriangle, CheckCircle,
-  BarChart3, Globe, Layers, Activity, Zap, Target, Clock,
-  ArrowUpRight, ArrowDownRight, Minus
+  BarChart3, Activity, Zap, Target, Clock, Minus
 } from 'lucide-react';
-
-const STAGE_COLORS: Record<string, string> = {
-  'intake': '#94a3b8',
-  'enrichment': '#60a5fa',
-  'scoring': '#a78bfa',
-  'synthesis': '#fbbf24',
-  'review': '#f97316',
-  'export-ready': '#10b981',
-};
-
-const PRIORITY_COLORS: Record<string, string> = {
-  'high': 'text-rose-400 bg-rose-400/10',
-  'medium': 'text-amber-400 bg-amber-400/10',
-  'low': 'text-slate-400 bg-slate-400/10',
-};
-
-const STATUS_COLORS: Record<string, string> = {
-  'active': 'text-emerald-400 bg-emerald-400/10',
-  'pending': 'text-amber-400 bg-amber-400/10',
-  'completed': 'text-cyan-400 bg-cyan-400/10',
-  'archived': 'text-slate-400 bg-slate-400/10',
-};
 
 export default function EvoDashboard() {
   const { locale, projects, enrichedProjects, analysisHistory, analyzedCount, analyzedAt, setActiveView } = useEvoStore();

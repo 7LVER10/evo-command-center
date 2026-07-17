@@ -5,42 +5,16 @@ import { useEvoStore } from '@/lib/evo/store';
 import { t, nicheLabel } from '@/lib/evo/i18n';
 import { Locale } from '@/lib/evo/types';
 import { EnrichedProject, ExportFormat } from '@/lib/evo/vnext-types';
+import { STAGE_COLORS, STAGE_KEYS, PRIORITY_COLORS } from '@/lib/evo/constants';
 import {
-  Download, Copy, Target, AlertTriangle, TrendingUp,
-  ChevronRight, Shield, Zap, X, FileText, Printer
+  Copy, ChevronRight, Zap, X, Printer
 } from 'lucide-react';
 
-const STAGE_KEYS: Record<string, string> = {
-  'intake': 'stageIntake',
-  'enrichment': 'stageEnrichment',
-  'scoring': 'stageScoring',
-  'synthesis': 'stageSynthesis',
-  'review': 'stageReview',
-  'export-ready': 'stageExportReady',
-};
-
-const STAGE_COLORS: Record<string, string> = {
-  'intake': '#94a3b8',
-  'enrichment': '#60a5fa',
-  'scoring': '#a78bfa',
-  'synthesis': '#fbbf24',
-  'review': '#f97316',
-  'export-ready': '#10b981',
-};
-
-const PRIORITY_COLORS: Record<string, string> = {
-  'high': 'text-rose-400 bg-rose-400/10',
-  'medium': 'text-amber-400 bg-amber-400/10',
-  'low': 'text-slate-400 bg-slate-400/10',
-};
-
-const exportFormats: { key: ExportFormat; labelKey: string }[] = [
-  { key: 'html_report', labelKey: 'exportHtmlReport' },
-  { key: 'brief', labelKey: 'exportBrief' },
-  { key: 'sales_brief', labelKey: 'exportSales' },
-  { key: 'crm_note', labelKey: 'exportCRM' },
-  { key: 'telegram', labelKey: 'exportTelegram' },
-  { key: 'json', labelKey: 'exportJSON' },
+const clientExportFormats: { key: ExportFormat; labelKey: string; hintKey: string }[] = [
+  { key: 'brief', labelKey: 'exportBrief', hintKey: 'exportBriefHint' },
+  { key: 'sales_brief', labelKey: 'exportSales', hintKey: 'exportSalesHint' },
+  { key: 'crm_note', labelKey: 'exportCRM', hintKey: 'exportCRMHint' },
+  { key: 'telegram', labelKey: 'exportTelegram', hintKey: 'exportTelegramHint' },
 ];
 
 export default function EvoProjects() {
@@ -295,6 +269,16 @@ function ProjectDetail({
                     <span className="text-slate-500">{t(locale, 'aiGroup')}</span>
                     <span className="text-white">{project.grp}</span>
                   </div>
+                  <div className="flex justify-between p-2 rounded bg-white/3">
+                    <span className="text-slate-500">{t(locale, 'priority')}</span>
+                    <span className={`font-medium ${project.priority === 'high' ? 'text-rose-400' : project.priority === 'medium' ? 'text-amber-400' : 'text-slate-400'}`}>
+                      {project.priority === 'high' ? t(locale, 'priorityHigh') : project.priority === 'medium' ? t(locale, 'priorityMedium') : t(locale, 'priorityLow')}
+                    </span>
+                  </div>
+                  <div className="flex justify-between p-2 rounded bg-white/3">
+                    <span className="text-slate-500">{t(locale, 'stage')}</span>
+                    <span className="text-white">{t(locale, STAGE_KEYS[project.stage])}</span>
+                  </div>
                 </div>
               </div>
 
@@ -434,34 +418,29 @@ function ProjectDetail({
                 <Printer className="w-4 h-4" />
                 {t(locale, 'exportHtmlReport')}
               </button>
-              <div className="grid grid-cols-3 gap-2">
-                {exportFormats.filter(f => f.key !== 'html_report').map((fmt) => (
+              <div className="grid grid-cols-2 gap-2">
+                {clientExportFormats.map((fmt) => (
                   <div key={fmt.key} className="flex gap-1">
                     <button
                       onClick={() => exportEnriched(enriched, fmt.key)}
-                      className="flex-1 px-2 py-1.5 text-[10px] font-medium rounded bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400/20 transition"
+                      title={t(locale, fmt.hintKey)}
+                      className="flex-1 px-3 py-2 text-[11px] font-medium rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 transition text-left"
                     >
                       {t(locale, fmt.labelKey)}
                     </button>
                     <button
                       onClick={() => copyExport(enriched, fmt.key)}
-                      className="p-1.5 rounded bg-white/5 hover:bg-white/10 transition"
+                      title={t(locale, 'copyToClipboard')}
+                      className="px-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition"
                     >
                       <Copy className="w-3 h-3 text-slate-400" />
                     </button>
                   </div>
                 ))}
               </div>
+              <p className="text-[10px] text-slate-600 mt-2">{t(locale, 'exportCopyHint')}</p>
             </div>
           )}
-
-          {/* Raw Payload */}
-          <div>
-            <h3 className="text-xs font-semibold text-slate-400 uppercase mb-3">{t(locale, 'rawPayload')}</h3>
-            <pre className="p-3 rounded-lg bg-black/40 text-[10px] text-slate-400 overflow-x-auto max-h-40">
-              {JSON.stringify(enriched || project, null, 2)}
-            </pre>
-          </div>
         </div>
       </div>
     </div>
