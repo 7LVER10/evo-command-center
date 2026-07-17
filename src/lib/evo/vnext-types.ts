@@ -61,7 +61,7 @@ export interface CompetitorContext {
   differentiation: string;
 }
 
-export type ExportFormat = 'brief' | 'sales_brief' | 'crm_note' | 'telegram' | 'json';
+export type ExportFormat = 'brief' | 'sales_brief' | 'crm_note' | 'telegram' | 'json' | 'html_report';
 
 export interface ExportPayload {
   format: ExportFormat;

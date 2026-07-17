@@ -147,7 +147,8 @@ export const useEvoStore = create<EvoState>((set, get) => ({
     const { locale } = get();
     const payload = generateExport(project, format, locale);
     downloadExport(payload, project.name.replace(/\s+/g, '-').toLowerCase());
-    get().addToast({ type: 'success', message: t(get().locale, 'exportedAs').replace('{format}', format) });
+    const label = format === 'html_report' ? t(get().locale, 'exportHtmlReport') : format;
+    get().addToast({ type: 'success', message: t(get().locale, 'exportedAs').replace('{format}', label) });
   },
 
   copyExport: async (project, format) => {

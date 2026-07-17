@@ -2,10 +2,10 @@
 
 import { useEvoStore } from '@/lib/evo/store';
 import { t, nicheLabel } from '@/lib/evo/i18n';
-import { Download, FileText } from 'lucide-react';
+import { Download, FileText, Printer } from 'lucide-react';
 
 export default function EvoExports() {
-  const { locale, enrichedProjects } = useEvoStore();
+  const { locale, enrichedProjects, exportEnriched } = useEvoStore();
 
   const formats = ['brief', 'sales_brief', 'crm_note', 'telegram', 'json'];
   const locales = ['en', 'ru', 'de', 'tr'];
@@ -45,7 +45,7 @@ export default function EvoExports() {
         <h3 className="text-sm font-semibold text-white mb-3">{t(locale, 'enrichedProjectsAvailable')}</h3>
         {enrichedProjects.length > 0 ? (
           <div className="space-y-2">
-            {enrichedProjects.slice(0, 5).map((p) => (
+            {enrichedProjects.slice(0, 10).map((p) => (
               <div key={p.id} className="flex items-center justify-between p-2 rounded bg-white/3">
                 <div>
                   <div className="text-sm text-white">{p.name}</div>
@@ -53,7 +53,18 @@ export default function EvoExports() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-emerald-400">O:{p.scores?.opportunity?.value}</span>
-                  <Download className="w-4 h-4 text-cyan-400 cursor-pointer hover:text-cyan-300" />
+                  <button
+                    onClick={() => exportEnriched(p, 'html_report')}
+                    className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400/20 transition"
+                    title={t(locale, 'exportHtmlReport')}
+                  >
+                    <Printer className="w-3 h-3" />
+                    {t(locale, 'exportHtmlReport')}
+                  </button>
+                  <Download
+                    className="w-4 h-4 text-cyan-400 cursor-pointer hover:text-cyan-300"
+                    onClick={() => exportEnriched(p, 'brief')}
+                  />
                 </div>
               </div>
             ))}

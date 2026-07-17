@@ -7,7 +7,7 @@ import { Locale } from '@/lib/evo/types';
 import { EnrichedProject, ExportFormat } from '@/lib/evo/vnext-types';
 import {
   Download, Copy, Target, AlertTriangle, TrendingUp,
-  ChevronRight, Shield, Zap, X, FileText
+  ChevronRight, Shield, Zap, X, FileText, Printer
 } from 'lucide-react';
 
 const STAGE_KEYS: Record<string, string> = {
@@ -35,6 +35,7 @@ const PRIORITY_COLORS: Record<string, string> = {
 };
 
 const exportFormats: { key: ExportFormat; labelKey: string }[] = [
+  { key: 'html_report', labelKey: 'exportHtmlReport' },
   { key: 'brief', labelKey: 'exportBrief' },
   { key: 'sales_brief', labelKey: 'exportSales' },
   { key: 'crm_note', labelKey: 'exportCRM' },
@@ -109,6 +110,7 @@ export default function EvoProjects() {
           <option value="export-ready">{t(locale, 'stageExportReady')}</option>
         </select>
         <span className="text-xs text-slate-500">{t(locale, 'resultsCount').replace('{n}', String(filtered.length))}</span>
+        <span className="text-[10px] text-slate-600 ml-2">{t(locale, 'searchFiltersHint')}</span>
       </div>
 
       {/* Table */}
@@ -247,11 +249,87 @@ function ProjectDetail({
         </div>
 
         <div className="p-5 space-y-5">
-          {/* Summary */}
-          <div className="p-3 rounded-lg bg-cyan-400/5 border border-cyan-400/10">
-            <div className="text-xs text-cyan-400 font-medium mb-1">{t(locale, 'aiAnalysis')}</div>
-            <div className="text-sm text-slate-300">
-              {locale === 'ru' ? project.summary_ru : locale === 'de' ? project.summary_de : locale === 'tr' ? project.summary_tr : project.summary_en}
+          {/* Source Data */}
+          <div className="rounded-xl border border-white/8 overflow-hidden">
+            <div className="px-4 py-3 bg-white/3 border-b border-white/6">
+              <div className="text-sm font-semibold text-white">{t(locale, 'sourceData')}</div>
+              <div className="text-xs text-slate-500">{t(locale, 'sourceDataSubtitle')}</div>
+            </div>
+            <div className="p-4 space-y-4">
+              {/* Project Identification */}
+              <div>
+                <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-2">{t(locale, 'projectIdentification')}</div>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="flex justify-between p-2 rounded bg-white/3">
+                    <span className="text-slate-500">{t(locale, 'project')}</span>
+                    <span className="text-white font-medium">{project.name}</span>
+                  </div>
+                  <div className="flex justify-between p-2 rounded bg-white/3">
+                    <span className="text-slate-500">{t(locale, 'niche')}</span>
+                    <span className="text-white">{nicheLabel(locale, project.niche)}</span>
+                  </div>
+                  <div className="flex justify-between p-2 rounded bg-white/3">
+                    <span className="text-slate-500">{t(locale, 'geo')}</span>
+                    <span className="text-white">{project.country}</span>
+                  </div>
+                  <div className="flex justify-between p-2 rounded bg-white/3">
+                    <span className="text-slate-500">{t(locale, 'aiGroup')}</span>
+                    <span className="text-white">{project.grp}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Data Source Basis */}
+              <div>
+                <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-2">{t(locale, 'dataSourceBasis')}</div>
+                <div className="space-y-1.5">
+                  <div className="flex items-start gap-2 p-2 rounded bg-white/3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-slate-300">{t(locale, 'basedOnProjectProfile')}</span>
+                  </div>
+                  <div className="flex items-start gap-2 p-2 rounded bg-white/3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-slate-300">{t(locale, 'basedOnAgentAnalysis')}</span>
+                  </div>
+                  <div className="flex items-start gap-2 p-2 rounded bg-amber-400/5 border border-amber-400/10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-amber-300">{t(locale, 'noLiveExternalIntel')}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Data Scope & Freshness */}
+              <div>
+                <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-2">{t(locale, 'dataScopeFreshness')}</div>
+                <div className="space-y-1.5">
+                  <div className="flex items-start gap-2 p-2 rounded bg-white/3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-slate-300">{t(locale, 'syntheticDataNote')}</span>
+                  </div>
+                  <div className="flex items-start gap-2 p-2 rounded bg-white/3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-slate-300">{t(locale, 'snapshotBasis')}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Known Limits */}
+              <div>
+                <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-2">{t(locale, 'knownLimits')}</div>
+                <div className="space-y-1.5">
+                  <div className="flex items-start gap-2 p-2 rounded bg-rose-400/5 border border-rose-400/10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-rose-400 mt-1.5 shrink-0" />
+                    <span className="text-xs text-rose-300">{t(locale, 'limitedToInputs')}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Analysis Summary */}
+              <div className="pt-2 border-t border-white/6">
+                <div className="text-xs text-slate-400 leading-relaxed">
+                  {locale === 'ru' ? project.summary_ru : locale === 'de' ? project.summary_de : locale === 'tr' ? project.summary_tr : project.summary_en}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -270,29 +348,6 @@ function ProjectDetail({
               <div className="p-3 rounded-lg bg-white/3">
                 <div className="text-xs text-slate-500">{t(locale, 'margin')}</div>
                 <div className="text-xl font-bold text-cyan-400">{margin}%</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Context */}
-          <div>
-            <h3 className="text-xs font-semibold text-slate-400 uppercase mb-3">{t(locale, 'contextIntelligence')}</h3>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="flex justify-between p-2 rounded bg-white/3">
-                <span className="text-slate-500">{t(locale, 'aiCountry')}</span>
-                <span className="text-white">{project.country}</span>
-              </div>
-              <div className="flex justify-between p-2 rounded bg-white/3">
-                <span className="text-slate-500">{t(locale, 'aiNiche')}</span>
-                <span className="text-white">{nicheLabel(locale, project.niche)}</span>
-              </div>
-              <div className="flex justify-between p-2 rounded bg-white/3">
-                <span className="text-slate-500">{t(locale, 'aiGroup')}</span>
-                <span className="text-white">{project.grp}</span>
-              </div>
-              <div className="flex justify-between p-2 rounded bg-white/3">
-                <span className="text-slate-500">{t(locale, 'aiConfidence')}</span>
-                <span className="text-white">{enriched?.synthesis?.confidence ? `${(enriched.synthesis.confidence * 100).toFixed(1)}%` : t(locale, 'na')}</span>
               </div>
             </div>
           </div>
@@ -345,8 +400,15 @@ function ProjectDetail({
           {enriched && (
             <div>
               <h3 className="text-xs font-semibold text-slate-400 uppercase mb-3">{t(locale, 'exportHandoff')}</h3>
-              <div className="grid grid-cols-5 gap-2">
-                {exportFormats.map((fmt) => (
+              <button
+                onClick={() => exportEnriched(enriched, 'html_report')}
+                className="w-full mb-3 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-black hover:shadow-lg hover:shadow-cyan-500/20 transition"
+              >
+                <Printer className="w-4 h-4" />
+                {t(locale, 'exportHtmlReport')}
+              </button>
+              <div className="grid grid-cols-3 gap-2">
+                {exportFormats.filter(f => f.key !== 'html_report').map((fmt) => (
                   <div key={fmt.key} className="flex gap-1">
                     <button
                       onClick={() => exportEnriched(enriched, fmt.key)}

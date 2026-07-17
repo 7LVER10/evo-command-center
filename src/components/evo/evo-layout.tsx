@@ -259,27 +259,33 @@ export default function EvoLayout({
         {/* Top Bar */}
         <header className="h-14 bg-[#0a0c12]/80 backdrop-blur-xl border-b border-white/6 flex items-center justify-between px-6">
           <div className="flex items-center gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-              <input
-                type="text"
-                placeholder={t(locale, 'searchProjects')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-64 bg-white/5 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/40"
-              />
+            <div>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <input
+                  type="text"
+                  placeholder={t(locale, 'searchProjects')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-64 bg-white/5 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/40"
+                />
+              </div>
+              <div className="text-[10px] text-slate-600 mt-1 ml-1">{t(locale, 'searchInputsHint')}</div>
             </div>
-            <button
-              onClick={runAnalysis}
-              disabled={analysisStatus === 'loading'}
-              className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-                analysisStatus === 'loading'
-                  ? 'bg-amber-500/20 text-amber-300'
-                  : 'bg-gradient-to-r from-cyan-500 to-blue-600 text-black hover:shadow-lg hover:shadow-cyan-500/20'
-              }`}
-            >
-              {analysisStatus === 'loading' ? t(locale, 'running') : t(locale, 'runAnalysis')}
-            </button>
+            <div>
+              <button
+                onClick={runAnalysis}
+                disabled={analysisStatus === 'loading'}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                  analysisStatus === 'loading'
+                    ? 'bg-amber-500/20 text-amber-300'
+                    : 'bg-gradient-to-r from-cyan-500 to-blue-600 text-black hover:shadow-lg hover:shadow-cyan-500/20'
+                }`}
+              >
+                {analysisStatus === 'loading' ? t(locale, 'analyzeRunning') : t(locale, 'analyzeButton')}
+              </button>
+              <div className="text-[10px] text-slate-600 mt-1 text-center">{t(locale, 'searchButtonHint')}</div>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
