@@ -27,7 +27,7 @@ export default function EvoLayout({
   activeView: string;
   setActiveView: (view: string) => void;
 }) {
-  const { locale, setLocale, searchQuery, setSearchQuery, runAnalysis, analysisStatus, projects, enrichedProjects } = useEvoStore();
+  const { locale, setLocale, searchQuery, setSearchQuery, runAnalysis, analysisStatus, projects, enrichedProjects, analyzedCount, analyzedAt } = useEvoStore();
   const [showOwnerGate, setShowOwnerGate] = useState(false);
   const [showOwnerPanel, setShowOwnerPanel] = useState(false);
   const [ownerPassword, setOwnerPassword] = useState('');
@@ -286,6 +286,13 @@ export default function EvoLayout({
               </button>
               <div className="text-[10px] text-slate-600 mt-1 text-center">{t(locale, 'searchButtonHint')}</div>
             </div>
+            {analyzedCount > 0 && analyzedAt && (
+              <div className="text-[10px] text-cyan-400/80 bg-cyan-400/5 border border-cyan-400/10 rounded px-2 py-1">
+                {t(locale, 'analyzeTimestamp')
+                  .replace('{n}', String(analyzedCount))
+                  .replace('{time}', new Date(analyzedAt).toLocaleTimeString(locale === 'ru' ? 'ru-RU' : locale === 'de' ? 'de-DE' : locale === 'tr' ? 'tr-TR' : 'en-US', { hour: '2-digit', minute: '2-digit' }))}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-3">

@@ -61,6 +61,8 @@ export interface EvoState {
   filterNiche: string;
   filterStage: string;
   analysisStatus: AnalysisStatus;
+  analyzedCount: number;
+  analyzedAt: string | null;
   projects: Project[];
   projectsLoading: boolean;
   selectedProject: Project | null;

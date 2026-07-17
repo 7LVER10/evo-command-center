@@ -38,6 +38,8 @@ export const useEvoStore = create<EvoState>((set, get) => ({
   filterNiche: 'all',
   filterStage: 'all',
   analysisStatus: 'idle',
+  analyzedCount: 0,
+  analyzedAt: null,
   projects: [],
   projectsLoading: true,
   selectedProject: null,
@@ -106,7 +108,13 @@ export const useEvoStore = create<EvoState>((set, get) => ({
 
       const signals = generateSignals(data.items, enriched);
 
-      set({ analysisStatus: 'success', enrichedProjects: enriched, signals });
+      set({
+        analysisStatus: 'success',
+        enrichedProjects: enriched,
+        signals,
+        analyzedCount: data.items.length,
+        analyzedAt: new Date().toISOString(),
+      });
 
       await addHistoryEntry({
         geo: filterGeo,
