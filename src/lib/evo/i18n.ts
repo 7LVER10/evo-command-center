@@ -750,6 +750,9 @@ export const NICHE_LABELS: Record<Locale, Record<string, string>> = {
     'PropTech': 'PropTech',
     'HealthTech': 'HealthTech',
     'EdTech': 'EdTech',
+    'GlassDesign': 'Architectural & Glass Design',
+    'Construction': 'Construction',
+    'Energy': 'Energy',
   },
   ru: {
     'Manufacturing': 'Производство',
@@ -760,6 +763,9 @@ export const NICHE_LABELS: Record<Locale, Record<string, string>> = {
     'PropTech': 'Проптех',
     'HealthTech': 'Медтех',
     'EdTech': 'Эдтех',
+    'GlassDesign': 'Архитектурное и стекольное проектирование',
+    'Construction': 'Строительство',
+    'Energy': 'Энергетика',
   },
   de: {
     'Manufacturing': 'Industrie',
@@ -770,6 +776,9 @@ export const NICHE_LABELS: Record<Locale, Record<string, string>> = {
     'PropTech': 'PropTech',
     'HealthTech': 'HealthTech',
     'EdTech': 'EdTech',
+    'GlassDesign': 'Architektur- und Glasdesign',
+    'Construction': 'Bauwesen',
+    'Energy': 'Energiewirtschaft',
   },
   tr: {
     'Manufacturing': 'Üretim',
@@ -780,6 +789,9 @@ export const NICHE_LABELS: Record<Locale, Record<string, string>> = {
     'PropTech': 'PropTech',
     'HealthTech': 'SağlıkTech',
     'EdTech': 'EğitimTech',
+    'GlassDesign': 'Mimari ve Cam Tasarımı',
+    'Construction': 'İnşaat',
+    'Energy': 'Enerji',
   },
 };
 

@@ -35,14 +35,15 @@ function runNicheAnalyst(project: Project): AgentOutput {
     'IT & Software': 0.92, 'AI & Machine Learning': 0.95, 'Cybersecurity': 0.9,
     'Pharmaceuticals': 0.85, 'Healthcare & MedTech': 0.88, 'HealthTech': 0.88,
     'Biotechnology': 0.87, 'Renewable Energy': 0.9, 'EV & Autonomous Vehicles': 0.88,
-    'Construction': 0.7, 'Real Estate': 0.65, 'PropTech': 0.72,
+    'Real Estate': 0.65, 'PropTech': 0.72,
     'Finance & Banking': 0.75, 'Fintech': 0.82,
     'Logistics & Transport': 0.72, 'Logistics': 0.72,
     'Telecommunications': 0.78, 'Aerospace & Defense': 0.8,
     'Automotive': 0.75, 'Manufacturing': 0.68,
-    'Glass Industry': 0.65, 'AgroTech': 0.7, 'Agritech': 0.7,
+    'Glass Industry': 0.65, 'GlassDesign': 0.78, 'AgroTech': 0.7, 'Agritech': 0.7,
     'Education & EdTech': 0.75, 'EdTech': 0.75,
     'Tourism & Hospitality': 0.6, 'Energy (Oil & Gas)': 0.65,
+    'Construction': 0.72, 'Energy': 0.68,
     'SaaS': 0.88, 'Healthcare': 0.85,
   };
   const growth = nicheGrowthMap[project.niche] ?? 0.7;
