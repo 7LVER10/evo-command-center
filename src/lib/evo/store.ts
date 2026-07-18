@@ -5,6 +5,8 @@ import { runAgentStack, generateSignals } from './agent-engine';
 import { generateExport, downloadExport, copyToClipboard } from './export-engine';
 import { getHistory, addHistoryEntry } from './history-engine';
 import { t } from './i18n';
+import { logger } from './logger';
+import { safeFetch } from './safe-fetch';
 
 const STORAGE_KEY = 'evo-state';
 
@@ -15,7 +17,8 @@ function loadPersistedState(): Partial<EvoState> {
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     return { locale: parsed.locale, theme: parsed.theme };
-  } catch {
+  } catch (err) {
+    logger.warn('store', 'persistState:load_failed', { error: err instanceof Error ? err.message : String(err) });
     return {};
   }
 }
@@ -27,7 +30,9 @@ function persistState(state: EvoState) {
       locale: state.locale,
       theme: state.theme,
     }));
-  } catch {}
+  } catch (err) {
+    logger.warn('store', 'persistState:save_failed', { error: err instanceof Error ? err.message : String(err) });
+  }
 }
 
 export const useEvoStore = create<EvoState>((set, get) => ({
@@ -78,19 +83,22 @@ export const useEvoStore = create<EvoState>((set, get) => ({
   loadProjects: async () => {
     set({ projectsLoading: true });
     try {
-      const res = await fetch('/api/projects');
+      const res = await safeFetch('/api/projects');
       const data = await res.json();
+      logger.info('store', 'loadProjects:success', { count: data.length });
       set({ projects: data, projectsLoading: false });
-    } catch {
+    } catch (err) {
+      logger.error('store', 'loadProjects:failed', { error: err instanceof Error ? err.message : String(err) });
       set({ projectsLoading: false });
     }
   },
 
   runAnalysis: async () => {
     const { searchQuery, filterGeo, filterNiche, filterStage, locale } = get();
+    logger.info('store', 'runAnalysis:start', { query: searchQuery, geo: filterGeo, niche: filterNiche, stage: filterStage });
     set({ analysisStatus: 'loading' });
     try {
-      const res = await fetch('/api/analysis', {
+      const res = await safeFetch('/api/analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -108,6 +116,8 @@ export const useEvoStore = create<EvoState>((set, get) => ({
       });
 
       const signals = generateSignals(data.items, enriched);
+
+      logger.info('store', 'runAnalysis:complete', { items: data.items.length, enriched: enriched.length, signals: signals.length });
 
       set({
         analysisStatus: 'success',
@@ -132,22 +142,26 @@ export const useEvoStore = create<EvoState>((set, get) => ({
       set({ analysisHistory: history });
 
       get().addToast({ type: 'success', message: t(get().locale, 'analysisComplete').replace('{n}', String(data.items.length)) });
-    } catch {
+    } catch (err) {
+      logger.error('store', 'runAnalysis:failed', { error: err instanceof Error ? err.message : String(err) });
       set({ analysisStatus: 'error' });
       get().addToast({ type: 'error', message: t(get().locale, 'analysisFailed') });
     }
   },
 
   updateProjectStatus: async (id: number, status: ProjectStatus) => {
+    logger.info('store', 'updateProjectStatus:start', { id, status });
     try {
-      await fetch(`/api/projects/${id}`, {
+      await safeFetch(`/api/projects/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
       });
+      logger.info('store', 'updateProjectStatus:success', { id, status });
       get().loadProjects();
       get().addToast({ type: 'success', message: t(get().locale, 'statusUpdated') });
-    } catch {
+    } catch (err) {
+      logger.error('store', 'updateProjectStatus:failed', { id, status, error: err instanceof Error ? err.message : String(err) });
       get().addToast({ type: 'error', message: t(get().locale, 'statusUpdateFailed') });
     }
   },

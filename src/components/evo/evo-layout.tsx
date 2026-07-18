@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useEvoStore } from '@/lib/evo/store';
 import { t } from '@/lib/evo/i18n';
 import {
@@ -34,6 +34,23 @@ export default function EvoLayout({
   const [ownerError, setOwnerError] = useState(false);
   const [ownerLoading, setOwnerLoading] = useState(false);
   const [ownerTab, setOwnerTab] = useState<'health' | 'debug'>('health');
+  const [healthStatus, setHealthStatus] = useState<'ok' | 'degraded' | 'down' | 'unknown'>('unknown');
+
+  const fetchHealth = useCallback(async () => {
+    try {
+      const res = await fetch('/api/health');
+      const data = await res.json();
+      setHealthStatus(data.status || 'unknown');
+    } catch {
+      setHealthStatus('degraded');
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchHealth();
+    const interval = setInterval(fetchHealth, 60000);
+    return () => clearInterval(interval);
+  }, [fetchHealth]);
 
   const handleOwnerSubmit = async () => {
     if (!ownerPassword.trim()) {
@@ -112,9 +129,29 @@ export default function EvoLayout({
         </nav>
 
         <div className="p-4 border-t border-white/6">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] text-emerald-400">{t(locale, 'allSystemsOperational')}</span>
+          <div className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+            healthStatus === 'ok' ? 'bg-emerald-500/10 border border-emerald-500/20' :
+            healthStatus === 'degraded' ? 'bg-amber-500/10 border border-amber-500/20' :
+            healthStatus === 'down' ? 'bg-rose-500/10 border border-rose-500/20' :
+            'bg-slate-500/10 border border-slate-500/20'
+          }`}>
+            <div className={`w-2 h-2 rounded-full animate-pulse ${
+              healthStatus === 'ok' ? 'bg-emerald-400' :
+              healthStatus === 'degraded' ? 'bg-amber-400' :
+              healthStatus === 'down' ? 'bg-rose-400' :
+              'bg-slate-400'
+            }`} />
+            <span className={`text-[10px] ${
+              healthStatus === 'ok' ? 'text-emerald-400' :
+              healthStatus === 'degraded' ? 'text-amber-400' :
+              healthStatus === 'down' ? 'text-rose-400' :
+              'text-slate-400'
+            }`}>
+              {healthStatus === 'ok' ? t(locale, 'allSystemsOperational') :
+               healthStatus === 'degraded' ? 'Degraded' :
+               healthStatus === 'down' ? 'System Down' :
+               'Checking...'}
+            </span>
           </div>
           <button
             onClick={() => setShowOwnerGate(true)}
@@ -208,7 +245,7 @@ export default function EvoLayout({
                   <h3 className="text-sm font-semibold text-white">{t(locale, 'systemStatus')}</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {[
-                      { name: 'API Gateway', status: 'ok', value: '200' },
+                      { name: 'API Gateway', status: healthStatus === 'ok' ? 'ok' : 'warn', value: healthStatus === 'ok' ? '200' : healthStatus === 'down' ? '503' : '...' },
                       { name: 'Agent Stack', status: 'ok', value: '6/6' },
                       { name: 'Database', status: 'ok', value: 'SQLite' },
                       { name: 'Persistence', status: 'ok', value: 'localStorage' },

@@ -1,3 +1,5 @@
+import { logger } from './logger';
+
 export interface PersistenceAdapter<T> {
   load(): Promise<T[]>;
   save(items: T[]): Promise<void>;
@@ -19,7 +21,8 @@ function createLocalStorageAdapter<T>(key: string, maxItems: number): Persistenc
       try {
         const raw = localStorage.getItem(key);
         return raw ? JSON.parse(raw) : [];
-      } catch {
+      } catch (err) {
+        logger.warn('persistence', 'load:parse_failed', { key, error: err instanceof Error ? err.message : String(err) });
         return [];
       }
     },
