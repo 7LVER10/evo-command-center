@@ -1,9 +1,8 @@
-import { getDb, seedDatabase } from './db';
+import { getDb } from './db';
 import type { Project, AnalysisResult, ProjectStatus } from './types';
 
 export function getAllProjects(): Project[] {
   const db = getDb();
-  seedDatabase(db);
   const rows = db.prepare('SELECT * FROM projects ORDER BY id').all() as Project[];
   return rows;
 }
@@ -15,7 +14,6 @@ export function getFilteredProjects(
   stage: string
 ): Project[] {
   const db = getDb();
-  seedDatabase(db);
 
   let sql = 'SELECT * FROM projects WHERE 1=1';
   const params: (string | number)[] = [];

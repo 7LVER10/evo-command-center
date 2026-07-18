@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
+import { logger } from './logger';
 
 const DB_PATH = process.env.DATABASE_PATH || path.join(process.cwd(), 'evo.db');
 
@@ -10,13 +11,27 @@ if (!fs.existsSync(dbDir)) {
 }
 
 let _db: Database.Database | null = null;
+let _initialized = false;
 
 export function getDb(): Database.Database {
   if (!_db) {
+    const start = Date.now();
     _db = new Database(DB_PATH);
     _db.pragma('journal_mode = WAL');
     _db.pragma('foreign_keys = ON');
     initSchema(_db);
+
+    const count = _db.prepare('SELECT COUNT(*) as c FROM projects').get() as { c: number };
+    if (count.c === 0) {
+      logger.info('db', 'init:seed_required', { reason: 'projects table empty' });
+      seedDatabase(_db);
+      logger.info('db', 'init:seed_complete', { durationMs: Date.now() - start });
+    } else {
+      logger.info('db', 'init:seed_skipped', { reason: 'projects table has data', rowCount: count.c });
+    }
+
+    _initialized = true;
+    logger.info('db', 'init:complete', { durationMs: Date.now() - start });
   }
   return _db;
 }
