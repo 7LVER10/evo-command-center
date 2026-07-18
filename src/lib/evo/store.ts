@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { EvoState, ProjectStatus } from './types';
 import { EnrichedProject, ExportFormat } from './vnext-types';
-import { runAgentStack, generateSignals } from './agent-engine';
 import { generateExport, downloadExport, copyToClipboard } from './export-engine';
 import { getHistory, addHistoryEntry } from './history-engine';
 import { t } from './i18n';
@@ -98,7 +97,7 @@ export const useEvoStore = create<EvoState>((set, get) => ({
     logger.info('store', 'runAnalysis:start', { query: searchQuery, geo: filterGeo, niche: filterNiche, stage: filterStage });
     set({ analysisStatus: 'loading' });
     try {
-      const res = await safeFetch('/api/analysis', {
+      const res = await safeFetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -106,24 +105,21 @@ export const useEvoStore = create<EvoState>((set, get) => ({
           country: filterGeo,
           niche: filterNiche,
           stage: filterStage,
+          locale,
         }),
       });
       const data = await res.json();
 
-      const enriched: EnrichedProject[] = data.items.map((project: any) => {
-        const agentResult = runAgentStack(project, locale);
-        return { ...project, ...agentResult };
-      });
+      const enriched: EnrichedProject[] = data.enrichedProjects;
+      const signals = data.signals;
 
-      const signals = generateSignals(data.items, enriched);
-
-      logger.info('store', 'runAnalysis:complete', { items: data.items.length, enriched: enriched.length, signals: signals.length });
+      logger.info('store', 'runAnalysis:complete', { items: enriched.length, signals: signals.length });
 
       set({
         analysisStatus: 'success',
         enrichedProjects: enriched,
         signals,
-        analyzedCount: data.items.length,
+        analyzedCount: enriched.length,
         analyzedAt: new Date().toISOString(),
       });
 
@@ -131,7 +127,7 @@ export const useEvoStore = create<EvoState>((set, get) => ({
         geo: filterGeo,
         niche: filterNiche,
         query: searchQuery,
-        result_count: data.items.length,
+        result_count: enriched.length,
         avg_opportunity: enriched.length > 0 ? Math.round(enriched.reduce((a, e) => a + (e.scores?.opportunity?.value || 0), 0) / enriched.length) : 0,
         avg_risk: enriched.length > 0 ? Math.round(enriched.reduce((a, e) => a + (e.scores?.risk?.value || 0), 0) / enriched.length) : 0,
         avg_margin: enriched.length > 0 ? Math.round(enriched.reduce((a, e) => a + (e.scores?.margin?.value || 0), 0) / enriched.length) : 0,
@@ -141,7 +137,7 @@ export const useEvoStore = create<EvoState>((set, get) => ({
       const history = await getHistory();
       set({ analysisHistory: history });
 
-      get().addToast({ type: 'success', message: t(get().locale, 'analysisComplete').replace('{n}', String(data.items.length)) });
+      get().addToast({ type: 'success', message: t(get().locale, 'analysisComplete').replace('{n}', String(enriched.length)) });
     } catch (err) {
       logger.error('store', 'runAnalysis:failed', { error: err instanceof Error ? err.message : String(err) });
       set({ analysisStatus: 'error' });
