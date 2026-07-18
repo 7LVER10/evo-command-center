@@ -67,7 +67,53 @@ function initSchema(db: Database.Database) {
       high_priority_count INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS analysis_audits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      actor TEXT NOT NULL DEFAULT 'owner',
+      filters_summary TEXT NOT NULL DEFAULT '{}',
+      locale TEXT NOT NULL DEFAULT 'en',
+      cache_status TEXT NOT NULL DEFAULT 'miss',
+      project_count INTEGER NOT NULL DEFAULT 0,
+      signal_count INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'success',
+      duration_ms INTEGER NOT NULL DEFAULT 0,
+      error_summary TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `);
+}
+
+export function insertAnalysisAudit(record: {
+  actor?: string;
+  filtersSummary: string;
+  locale: string;
+  cacheStatus: string;
+  projectCount: number;
+  signalCount: number;
+  status: string;
+  durationMs: number;
+  errorSummary?: string;
+}) {
+  try {
+    const db = getDb();
+    db.prepare(`
+      INSERT INTO analysis_audits (actor, filters_summary, locale, cache_status, project_count, signal_count, status, duration_ms, error_summary)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      record.actor || 'owner',
+      record.filtersSummary,
+      record.locale,
+      record.cacheStatus,
+      record.projectCount,
+      record.signalCount,
+      record.status,
+      record.durationMs,
+      record.errorSummary || null
+    );
+  } catch (err) {
+    logger.error('db', 'audit_insert_failed', { error: err instanceof Error ? err.message : String(err) });
+  }
 }
 
 export function seedDatabase(db: Database.Database) {
