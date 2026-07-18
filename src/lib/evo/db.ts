@@ -68,6 +68,19 @@ function initSchema(db: Database.Database) {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
+    CREATE TABLE IF NOT EXISTS analysis_history (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      geo TEXT NOT NULL DEFAULT 'all',
+      niche TEXT NOT NULL DEFAULT 'all',
+      query TEXT NOT NULL DEFAULT '',
+      result_count INTEGER NOT NULL DEFAULT 0,
+      avg_opportunity INTEGER NOT NULL DEFAULT 0,
+      avg_risk INTEGER NOT NULL DEFAULT 0,
+      avg_margin INTEGER NOT NULL DEFAULT 0,
+      top_project_id INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
     CREATE TABLE IF NOT EXISTS analysis_audits (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       actor TEXT NOT NULL DEFAULT 'owner',
@@ -113,6 +126,61 @@ export function insertAnalysisAudit(record: {
     );
   } catch (err) {
     logger.error('db', 'audit_insert_failed', { error: err instanceof Error ? err.message : String(err) });
+  }
+}
+
+export function insertHistoryEntry(record: {
+  geo: string;
+  niche: string;
+  query: string;
+  result_count: number;
+  avg_opportunity: number;
+  avg_risk: number;
+  avg_margin: number;
+  top_project_id: number;
+}) {
+  try {
+    const db = getDb();
+    db.prepare(`
+      INSERT INTO analysis_history (geo, niche, query, result_count, avg_opportunity, avg_risk, avg_margin, top_project_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(record.geo, record.niche, record.query, record.result_count, record.avg_opportunity, record.avg_risk, record.avg_margin, record.top_project_id);
+  } catch (err) {
+    logger.error('db', 'history_insert_failed', { error: err instanceof Error ? err.message : String(err) });
+  }
+}
+
+export function getHistoryEntries(limit = 100): Array<{
+  id: number;
+  geo: string;
+  niche: string;
+  query: string;
+  result_count: number;
+  avg_opportunity: number;
+  avg_risk: number;
+  avg_margin: number;
+  top_project_id: number;
+  created_at: string;
+}> {
+  const db = getDb();
+  return db.prepare('SELECT * FROM analysis_history ORDER BY id DESC LIMIT ?').all(limit) as any[];
+}
+
+export function deleteHistoryEntry(id: number) {
+  try {
+    const db = getDb();
+    db.prepare('DELETE FROM analysis_history WHERE id = ?').run(id);
+  } catch (err) {
+    logger.error('db', 'history_delete_failed', { error: err instanceof Error ? err.message : String(err) });
+  }
+}
+
+export function clearHistoryEntries() {
+  try {
+    const db = getDb();
+    db.prepare('DELETE FROM analysis_history').run();
+  } catch (err) {
+    logger.error('db', 'history_clear_failed', { error: err instanceof Error ? err.message : String(err) });
   }
 }
 

@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { EvoState, ProjectStatus } from './types';
 import { EnrichedProject, ExportFormat } from './vnext-types';
 import { generateExport, downloadExport, copyToClipboard } from './export-engine';
-import { getHistory, addHistoryEntry } from './history-engine';
 import { t } from './i18n';
 import { logger } from './logger';
 import { safeFetch } from './safe-fetch';
@@ -123,18 +122,27 @@ export const useEvoStore = create<EvoState>((set, get) => ({
         analyzedAt: new Date().toISOString(),
       });
 
-      await addHistoryEntry({
-        geo: filterGeo,
-        niche: filterNiche,
-        query: searchQuery,
-        result_count: enriched.length,
-        avg_opportunity: enriched.length > 0 ? Math.round(enriched.reduce((a, e) => a + (e.scores?.opportunity?.value || 0), 0) / enriched.length) : 0,
-        avg_risk: enriched.length > 0 ? Math.round(enriched.reduce((a, e) => a + (e.scores?.risk?.value || 0), 0) / enriched.length) : 0,
-        avg_margin: enriched.length > 0 ? Math.round(enriched.reduce((a, e) => a + (e.scores?.margin?.value || 0), 0) / enriched.length) : 0,
-        top_project_id: enriched[0]?.id || 0,
-      });
+      try {
+        await safeFetch('/api/history', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            geo: filterGeo,
+            niche: filterNiche,
+            query: searchQuery,
+            result_count: enriched.length,
+            avg_opportunity: enriched.length > 0 ? Math.round(enriched.reduce((a, e) => a + (e.scores?.opportunity?.value || 0), 0) / enriched.length) : 0,
+            avg_risk: enriched.length > 0 ? Math.round(enriched.reduce((a, e) => a + (e.scores?.risk?.value || 0), 0) / enriched.length) : 0,
+            avg_margin: enriched.length > 0 ? Math.round(enriched.reduce((a, e) => a + (e.scores?.margin?.value || 0), 0) / enriched.length) : 0,
+            top_project_id: enriched[0]?.id || 0,
+          }),
+        });
+      } catch (err) {
+        logger.warn('store', 'history_write_failed', { error: err instanceof Error ? err.message : String(err) });
+      }
 
-      const history = await getHistory();
+      const historyRes = await safeFetch('/api/history');
+      const history = await historyRes.json();
       set({ analysisHistory: history });
 
       get().addToast({ type: 'success', message: t(get().locale, 'analysisComplete').replace('{n}', String(enriched.length)) });
@@ -178,7 +186,12 @@ export const useEvoStore = create<EvoState>((set, get) => ({
   },
 
   loadHistory: async () => {
-    const history = await getHistory();
-    set({ analysisHistory: history });
+    try {
+      const res = await safeFetch('/api/history');
+      const history = await res.json();
+      set({ analysisHistory: history });
+    } catch (err) {
+      logger.warn('store', 'loadHistory:failed', { error: err instanceof Error ? err.message : String(err) });
+    }
   },
 }));
