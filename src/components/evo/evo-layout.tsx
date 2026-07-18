@@ -33,7 +33,9 @@ export default function EvoLayout({
   const [ownerPassword, setOwnerPassword] = useState('');
   const [ownerError, setOwnerError] = useState(false);
   const [ownerLoading, setOwnerLoading] = useState(false);
-  const [ownerTab, setOwnerTab] = useState<'health' | 'debug'>('health');
+  const [ownerTab, setOwnerTab] = useState<'health' | 'debug' | 'audit'>('health');
+  const [auditRecords, setAuditRecords] = useState<Array<Record<string, unknown>>>([]);
+  const [auditLoading, setAuditLoading] = useState(false);
   const [healthStatus, setHealthStatus] = useState<'ok' | 'degraded' | 'down' | 'unknown'>('unknown');
 
   const fetchHealth = useCallback(async () => {
@@ -51,6 +53,25 @@ export default function EvoLayout({
     const interval = setInterval(fetchHealth, 60000);
     return () => clearInterval(interval);
   }, [fetchHealth]);
+
+  const fetchAudit = useCallback(async () => {
+    setAuditLoading(true);
+    try {
+      const res = await fetch('/api/audit');
+      const data = await res.json();
+      setAuditRecords(data);
+    } catch {
+      setAuditRecords([]);
+    } finally {
+      setAuditLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (showOwnerPanel && ownerTab === 'audit') {
+      fetchAudit();
+    }
+  }, [showOwnerPanel, ownerTab, fetchAudit]);
 
   const handleOwnerSubmit = async () => {
     if (!ownerPassword.trim()) {
@@ -237,6 +258,12 @@ export default function EvoLayout({
               >
                 {t(locale, 'debugView')}
               </button>
+              <button
+                onClick={() => setOwnerTab('audit')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${ownerTab === 'audit' ? 'bg-cyan-400/10 text-cyan-300' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+              >
+                Audit
+              </button>
             </div>
 
             <div className="flex-1 overflow-y-auto p-5">
@@ -284,6 +311,52 @@ export default function EvoLayout({
                       }, null, 2)}
                     </pre>
                   </div>
+                </div>
+              )}
+
+              {ownerTab === 'audit' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-white">Analysis Audit Trail</h3>
+                    <button
+                      onClick={fetchAudit}
+                      className="text-[10px] text-cyan-400 hover:text-cyan-300 transition"
+                    >
+                      Refresh
+                    </button>
+                  </div>
+                  {auditLoading ? (
+                    <div className="text-xs text-slate-500 py-4 text-center">Loading...</div>
+                  ) : auditRecords.length === 0 ? (
+                    <div className="text-xs text-slate-500 py-4 text-center">No audit records yet</div>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {auditRecords.map((r) => (
+                        <div key={r.id as number} className="flex items-center gap-3 p-2 rounded bg-white/3 text-[11px]">
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                            r.status === 'success' ? 'bg-emerald-400' :
+                            r.status === 'partial' ? 'bg-amber-400' :
+                            'bg-rose-400'
+                          }`} />
+                          <span className="text-slate-400 w-28 shrink-0">
+                            {r.created_at ? new Date(r.created_at as string).toLocaleString() : '—'}
+                          </span>
+                          <span className="text-slate-300 flex-1 truncate">
+                            {String(r.filters_summary || '{}')}
+                          </span>
+                          <span className="text-slate-500 w-10 text-right">{r.locale as string}</span>
+                          <span className={`w-12 text-center ${
+                            r.cache_status === 'hit' ? 'text-emerald-400' : 'text-slate-500'
+                          }`}>
+                            {r.cache_status as string}
+                          </span>
+                          <span className="text-slate-400 w-8 text-right">{String(r.project_count)}</span>
+                          <span className="text-slate-400 w-8 text-right">{String(r.signal_count)}</span>
+                          <span className="text-slate-500 w-14 text-right">{String(r.duration_ms)}ms</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
