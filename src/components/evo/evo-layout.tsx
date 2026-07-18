@@ -169,9 +169,9 @@ export default function EvoLayout({
               'text-slate-400'
             }`}>
               {healthStatus === 'ok' ? t(locale, 'allSystemsOperational') :
-               healthStatus === 'degraded' ? 'Degraded' :
-               healthStatus === 'down' ? 'System Down' :
-               'Checking...'}
+               healthStatus === 'degraded' ? t(locale, 'healthDegraded') :
+               healthStatus === 'down' ? t(locale, 'healthDown') :
+               t(locale, 'healthChecking')}
             </span>
           </div>
           <button
@@ -262,7 +262,7 @@ export default function EvoLayout({
                 onClick={() => setOwnerTab('audit')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${ownerTab === 'audit' ? 'bg-cyan-400/10 text-cyan-300' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
               >
-                Audit
+                {t(locale, 'auditTab')}
               </button>
             </div>
 
@@ -317,18 +317,18 @@ export default function EvoLayout({
               {ownerTab === 'audit' && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-white">Analysis Audit Trail</h3>
+                    <h3 className="text-sm font-semibold text-white">{t(locale, 'auditTrail')}</h3>
                     <button
                       onClick={fetchAudit}
                       className="text-[10px] text-cyan-400 hover:text-cyan-300 transition"
                     >
-                      Refresh
+                      {t(locale, 'auditRefresh')}
                     </button>
                   </div>
                   {auditLoading ? (
-                    <div className="text-xs text-slate-500 py-4 text-center">Loading...</div>
+                    <div className="text-xs text-slate-500 py-4 text-center">{t(locale, 'auditLoading')}</div>
                   ) : auditRecords.length === 0 ? (
-                    <div className="text-xs text-slate-500 py-4 text-center">No audit records yet</div>
+                    <div className="text-xs text-slate-500 py-4 text-center">{t(locale, 'auditNoRecords')}</div>
                   ) : (
                     <div className="space-y-1.5">
                       {auditRecords.map((r) => (
@@ -348,7 +348,7 @@ export default function EvoLayout({
                           <span className={`w-12 text-center ${
                             r.cache_status === 'hit' ? 'text-emerald-400' : 'text-slate-500'
                           }`}>
-                            {r.cache_status as string}
+                            {r.cache_status === 'hit' ? t(locale, 'cacheHit') : t(locale, 'cacheMiss')}
                           </span>
                           <span className="text-slate-400 w-8 text-right">{String(r.project_count)}</span>
                           <span className="text-slate-400 w-8 text-right">{String(r.signal_count)}</span>
