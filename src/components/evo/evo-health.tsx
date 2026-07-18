@@ -11,11 +11,11 @@ export default function EvoHealth() {
     { name: t(locale, 'apiGateway'), status: 'ok', value: '200', detail: t(locale, 'allEndpointsResponding') },
     { name: t(locale, 'agentStack'), status: 'ok', value: '6/6', detail: t(locale, 'allAgentsOperational') },
     { name: 'Database', status: 'ok', value: 'SQLite', detail: t(locale, 'projectsLoaded').replace('{n}', String(projects.length)) },
-    { name: t(locale, 'persistence'), status: 'ok', value: 'localStorage', detail: t(locale, 'historyAdapterActive') },
+    { name: t(locale, 'persistence'), status: 'ok', value: 'SQLite', detail: t(locale, 'persistenceDetail') },
     { name: t(locale, 'exportEngine'), status: 'ok', value: '4 formats', detail: t(locale, 'exportFormatsDetail') },
     { name: 'i18n', status: 'ok', value: '4 locales', detail: t(locale, 'localesDetail') },
     { name: t(locale, 'analysisQueue'), status: enrichedProjects.length > 0 ? 'ok' : 'warn', value: `${enrichedProjects.length} enriched`, detail: enrichedProjects.length > 0 ? t(locale, 'enrichmentActive') : t(locale, 'enrichmentRunFirst') },
-    { name: t(locale, 'history'), status: 'ok', value: `${analysisHistory.length} entries`, detail: t(locale, 'localStoragePersistence') },
+    { name: t(locale, 'history'), status: 'ok', value: `${analysisHistory.length} entries`, detail: t(locale, 'historyDetail') },
   ];
 
   return (

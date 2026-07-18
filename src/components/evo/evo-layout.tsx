@@ -275,7 +275,7 @@ export default function EvoLayout({
                       { name: 'API Gateway', status: healthStatus === 'ok' ? 'ok' : 'warn', value: healthStatus === 'ok' ? '200' : healthStatus === 'down' ? '503' : '...' },
                       { name: 'Agent Stack', status: 'ok', value: '6/6' },
                       { name: 'Database', status: 'ok', value: 'SQLite' },
-                      { name: 'Persistence', status: 'ok', value: 'localStorage' },
+                      { name: 'Persistence', status: 'ok', value: 'SQLite' },
                       { name: 'Export Engine', status: 'ok', value: '5 formats' },
                       { name: 'i18n', status: 'ok', value: '4 locales' },
                       { name: 'Enrichment Pipeline', status: enrichedProjects.length > 0 ? 'ok' : 'warn', value: `${enrichedProjects.length} enriched` },
