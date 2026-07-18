@@ -1,6 +1,6 @@
 import { Project, Locale, MarketSignal } from './types';
 import {
-  AgentOutput, SynthesisOutput,
+  AgentOutput, AgentRole, SynthesisOutput,
   ProjectScores, ScoreBreakdown, SourceSignal,
   ActionRecommendation, CompetitorContext, EnrichedProject
 } from './vnext-types';
@@ -151,26 +151,28 @@ function runSynthesisAgent(
 }
 
 function computeScores(project: Project, geoOutput: AgentOutput, nicheOutput: AgentOutput, marginOutput: AgentOutput): ProjectScores {
-  const geoData = geoOutput.raw_data as { stability: number };
-  const nicheData = nicheOutput.raw_data as { growth: number };
+  const geoData = geoOutput.raw_data as { stability?: number };
+  const nicheData = nicheOutput.raw_data as { growth?: number };
+  const stability = geoData.stability ?? 0.7;
+  const growth = nicheData.growth ?? 0.7;
   const marginVal = project.relevance * 85 + (project.id % 15);
 
   const opportunityScore: ScoreBreakdown = {
-    value: Math.round((project.relevance * 0.4 + nicheData.growth * 0.35 + geoData.stability * 0.25) * 100),
+    value: Math.round((project.relevance * 0.4 + growth * 0.35 + stability * 0.25) * 100),
     factors: [
       { name: 'Relevance', weight: 0.4, contribution: Math.round(project.relevance * 40) },
-      { name: 'Niche Growth', weight: 0.35, contribution: Math.round(nicheData.growth * 35) },
-      { name: 'Geo Stability', weight: 0.25, contribution: Math.round(geoData.stability * 25) },
+      { name: 'Niche Growth', weight: 0.35, contribution: Math.round(growth * 35) },
+      { name: 'Geo Stability', weight: 0.25, contribution: Math.round(stability * 25) },
     ],
     methodology: 'Weighted composite of relevance, niche growth index, and geographic stability.',
   };
 
   const riskScore: ScoreBreakdown = {
-    value: Math.round((1 - project.relevance) * 50 + (1 - geoData.stability) * 30 + (1 - nicheData.growth) * 20),
+    value: Math.round((1 - project.relevance) * 50 + (1 - stability) * 30 + (1 - growth) * 20),
     factors: [
       { name: 'Low Relevance Risk', weight: 0.5, contribution: Math.round((1 - project.relevance) * 50) },
-      { name: 'Geo Risk', weight: 0.3, contribution: Math.round((1 - geoData.stability) * 30) },
-      { name: 'Niche Maturity Risk', weight: 0.2, contribution: Math.round((1 - nicheData.growth) * 20) },
+      { name: 'Geo Risk', weight: 0.3, contribution: Math.round((1 - stability) * 30) },
+      { name: 'Niche Maturity Risk', weight: 0.2, contribution: Math.round((1 - growth) * 20) },
     ],
     methodology: 'Inverse relevance + geographic risk + niche maturity risk.',
   };
@@ -255,12 +257,32 @@ function generateCompetitorContext(project: Project): CompetitorContext {
   };
 }
 
+function safeAgentRun(name: string, fn: () => AgentOutput, project: Project): AgentOutput {
+  const start = Date.now();
+  try {
+    const result = fn();
+    const durationMs = Date.now() - start;
+    console.log(`[agent] ${name}:success ${JSON.stringify({ projectId: project.id, durationMs })}`);
+    return result;
+  } catch (err) {
+    const durationMs = Date.now() - start;
+    console.error(`[agent] ${name}:fail ${JSON.stringify({ projectId: project.id, durationMs, error: err instanceof Error ? err.message : String(err) })}`);
+    return {
+      role: `${name}_fallback` as AgentRole,
+      signal: `${name} failed — using fallback`,
+      confidence: 0.1,
+      factors: [`${name} agent failed during execution`],
+      raw_data: {},
+    };
+  }
+}
+
 export function runAgentStack(project: Project, locale: Locale) {
-  const geoOutput = runGeoAnalyst(project);
-  const nicheOutput = runNicheAnalyst(project);
-  const competitorOutput = runCompetitorAnalyst(project);
-  const pricingOutput = runPricingAnalyst(project);
-  const marginOutput = runMarginAnalyst(project);
+  const geoOutput = safeAgentRun('geo_analyst', () => runGeoAnalyst(project), project);
+  const nicheOutput = safeAgentRun('niche_analyst', () => runNicheAnalyst(project), project);
+  const competitorOutput = safeAgentRun('competitor_analyst', () => runCompetitorAnalyst(project), project);
+  const pricingOutput = safeAgentRun('pricing_analyst', () => runPricingAnalyst(project), project);
+  const marginOutput = safeAgentRun('margin_analyst', () => runMarginAnalyst(project), project);
 
   const synthesis = runSynthesisAgent(project, geoOutput, nicheOutput, competitorOutput, pricingOutput, marginOutput, locale);
   const scores = computeScores(project, geoOutput, nicheOutput, marginOutput);
