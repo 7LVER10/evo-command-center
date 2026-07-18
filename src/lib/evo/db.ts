@@ -97,6 +97,33 @@ function initSchema(db: Database.Database) {
   `);
 }
 
+const AUDIT_MAX_ROWS = 500;
+const HISTORY_MAX_ROWS = 200;
+
+function pruneAuditTable(db: Database.Database) {
+  try {
+    const count = db.prepare('SELECT COUNT(*) as c FROM analysis_audits').get() as { c: number };
+    if (count.c > AUDIT_MAX_ROWS) {
+      const deleted = db.prepare(`DELETE FROM analysis_audits WHERE id NOT IN (SELECT id FROM analysis_audits ORDER BY id DESC LIMIT ?)`).run(AUDIT_MAX_ROWS);
+      logger.info('db', 'audit.retention.prune', { deleted: deleted.changes });
+    }
+  } catch (err) {
+    logger.warn('db', 'audit.retention.prune_failed', { error: err instanceof Error ? err.message : String(err) });
+  }
+}
+
+function pruneHistoryTable(db: Database.Database) {
+  try {
+    const count = db.prepare('SELECT COUNT(*) as c FROM analysis_history').get() as { c: number };
+    if (count.c > HISTORY_MAX_ROWS) {
+      const deleted = db.prepare(`DELETE FROM analysis_history WHERE id NOT IN (SELECT id FROM analysis_history ORDER BY id DESC LIMIT ?)`).run(HISTORY_MAX_ROWS);
+      logger.info('db', 'history.retention.prune', { deleted: deleted.changes });
+    }
+  } catch (err) {
+    logger.warn('db', 'history.retention.prune_failed', { error: err instanceof Error ? err.message : String(err) });
+  }
+}
+
 export function insertAnalysisAudit(record: {
   actor?: string;
   filtersSummary: string;
@@ -124,6 +151,7 @@ export function insertAnalysisAudit(record: {
       record.durationMs,
       record.errorSummary || null
     );
+    pruneAuditTable(db);
   } catch (err) {
     logger.error('db', 'audit_insert_failed', { error: err instanceof Error ? err.message : String(err) });
   }
@@ -145,6 +173,7 @@ export function insertHistoryEntry(record: {
       INSERT INTO analysis_history (geo, niche, query, result_count, avg_opportunity, avg_risk, avg_margin, top_project_id)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(record.geo, record.niche, record.query, record.result_count, record.avg_opportunity, record.avg_risk, record.avg_margin, record.top_project_id);
+    pruneHistoryTable(db);
   } catch (err) {
     logger.error('db', 'history_insert_failed', { error: err instanceof Error ? err.message : String(err) });
   }
