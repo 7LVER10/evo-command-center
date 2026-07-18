@@ -27,7 +27,7 @@ export default function EvoLayout({
   activeView: string;
   setActiveView: (view: string) => void;
 }) {
-  const { locale, setLocale, searchQuery, setSearchQuery, runAnalysis, analysisStatus, projects, enrichedProjects, analyzedCount, analyzedAt } = useEvoStore();
+  const { locale, setLocale, searchQuery, setSearchQuery, runAnalysis, analysisStatus, projects, enrichedProjects, analyzedCount, analyzedAt, ownerToken, setOwnerToken } = useEvoStore();
   const [showOwnerGate, setShowOwnerGate] = useState(false);
   const [showOwnerPanel, setShowOwnerPanel] = useState(false);
   const [ownerPassword, setOwnerPassword] = useState('');
@@ -57,7 +57,10 @@ export default function EvoLayout({
   const fetchAudit = useCallback(async () => {
     setAuditLoading(true);
     try {
-      const res = await fetch('/api/audit');
+      const token = useEvoStore.getState().ownerToken;
+      const res = await fetch('/api/audit', {
+        headers: token ? { 'x-evo-token': token } : {},
+      });
       const data = await res.json();
       setAuditRecords(data);
     } catch {
@@ -92,6 +95,7 @@ export default function EvoLayout({
       const data = await response.json();
 
       if (data.valid) {
+        setOwnerToken(ownerPassword);
         setShowOwnerGate(false);
         setShowOwnerPanel(true);
         setOwnerPassword('');

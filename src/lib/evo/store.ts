@@ -52,8 +52,10 @@ export const useEvoStore = create<EvoState>((set, get) => ({
   activeView: 'dashboard',
   showDetail: false,
   toasts: [],
+  ownerToken: null,
 
   setActiveView: (view) => set({ activeView: view }),
+  setOwnerToken: (token) => set({ ownerToken: token }),
 
   setLocale: (locale) => {
     set({ locale });
@@ -123,9 +125,13 @@ export const useEvoStore = create<EvoState>((set, get) => ({
       });
 
       try {
+        const token = get().ownerToken;
         await safeFetch('/api/history', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'x-evo-token': token } : {}),
+          },
           body: JSON.stringify({
             geo: filterGeo,
             niche: filterNiche,
@@ -187,7 +193,10 @@ export const useEvoStore = create<EvoState>((set, get) => ({
 
   loadHistory: async () => {
     try {
-      const res = await safeFetch('/api/history');
+      const token = get().ownerToken;
+      const res = await safeFetch('/api/history', {
+        headers: token ? { 'x-evo-token': token } : {},
+      });
       const history = await res.json();
       set({ analysisHistory: history });
     } catch (err) {

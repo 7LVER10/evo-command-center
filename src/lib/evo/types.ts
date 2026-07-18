@@ -72,7 +72,9 @@ export interface EvoState {
   activeView: string;
   showDetail: boolean;
   toasts: Toast[];
+  ownerToken: string | null;
   setActiveView: (view: string) => void;
+  setOwnerToken: (token: string | null) => void;
   setLocale: (locale: Locale) => void;
   setTheme: (theme: Theme) => void;
   setSearchQuery: (query: string) => void;

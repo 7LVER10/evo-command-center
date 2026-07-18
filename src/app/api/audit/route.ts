@@ -1,10 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/evo/db';
 import { logger } from '@/lib/evo/logger';
+import { assertOwnerToken } from '@/lib/evo/auth';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = assertOwnerToken(request);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
   try {
     const db = getDb();
     const rows = db.prepare('SELECT * FROM analysis_audits ORDER BY id DESC LIMIT 50').all();

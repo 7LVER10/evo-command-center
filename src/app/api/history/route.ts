@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getHistoryEntries, insertHistoryEntry, clearHistoryEntries } from '@/lib/evo/db';
 import { logger } from '@/lib/evo/logger';
+import { assertOwnerToken } from '@/lib/evo/auth';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = assertOwnerToken(request);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
   try {
     const entries = getHistoryEntries(100);
     logger.info('api/history', 'GET:success', { count: entries.length });
@@ -18,6 +24,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = assertOwnerToken(request);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
   try {
     const body = await request.json();
     insertHistoryEntry(body);
@@ -29,7 +40,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function DELETE() {
+export async function DELETE(request: NextRequest) {
+  const auth = assertOwnerToken(request);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
   try {
     clearHistoryEntries();
     logger.info('api/history', 'DELETE:success');
