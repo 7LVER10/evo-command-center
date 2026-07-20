@@ -30,7 +30,7 @@ export default function EvoLayout({
   const { locale, setLocale, searchQuery, setSearchQuery, runAnalysis, analysisStatus, projects, enrichedProjects, analyzedCount, analyzedAt, ownerToken, setOwnerToken } = useEvoStore();
   const [showOwnerGate, setShowOwnerGate] = useState(false);
   const [showOwnerPanel, setShowOwnerPanel] = useState(false);
-  const [ownerPassword, setOwnerPassword] = useState('');
+  const [ownerInput, setOwnerInput] = useState('');
   const [ownerError, setOwnerError] = useState(false);
   const [ownerLoading, setOwnerLoading] = useState(false);
   const [ownerTab, setOwnerTab] = useState<'health' | 'debug' | 'audit'>('health');
@@ -77,7 +77,7 @@ export default function EvoLayout({
   }, [showOwnerPanel, ownerTab, fetchAudit]);
 
   const handleOwnerSubmit = async () => {
-    if (!ownerPassword.trim()) {
+    if (!ownerInput.trim()) {
       setOwnerError(true);
       return;
     }
@@ -89,16 +89,16 @@ export default function EvoLayout({
       const response = await fetch('/api/owner/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: ownerPassword }),
+        body: JSON.stringify({ password: ownerInput }),
       });
 
       const data = await response.json();
 
       if (data.valid) {
-        setOwnerToken(ownerPassword);
+        setOwnerToken(ownerInput);
         setShowOwnerGate(false);
         setShowOwnerPanel(true);
-        setOwnerPassword('');
+        setOwnerInput('');
         setOwnerError(false);
       } else {
         setOwnerError(true);
@@ -113,7 +113,7 @@ export default function EvoLayout({
   const handleOwnerClose = () => {
     setShowOwnerPanel(false);
     setShowOwnerGate(false);
-    setOwnerPassword('');
+    setOwnerInput('');
     setOwnerError(false);
   };
 
@@ -209,8 +209,8 @@ export default function EvoLayout({
               <input
                 type="password"
                 placeholder={t(locale, 'ownerGatePlaceholder')}
-                value={ownerPassword}
-                onChange={(e) => { setOwnerPassword(e.target.value); setOwnerError(false); }}
+                value={ownerInput}
+                onChange={(e) => { setOwnerInput(e.target.value); setOwnerError(false); }}
                 onKeyDown={(e) => e.key === 'Enter' && handleOwnerSubmit()}
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/40"
                 autoFocus
