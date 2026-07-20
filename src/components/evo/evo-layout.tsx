@@ -6,7 +6,7 @@ import { t } from '@/lib/evo/i18n';
 import {
   LayoutDashboard, FolderOpen, Radio, Clock,
   Download, Search, Zap, Settings, X, Lock,
-  CheckCircle, AlertTriangle
+  CheckCircle, AlertTriangle, CreditCard
 } from 'lucide-react';
 
 const navItems = [
@@ -15,6 +15,7 @@ const navItems = [
   { id: 'signals', icon: Radio, labelKey: 'signals' },
   { id: 'history', icon: Clock, labelKey: 'history' },
   { id: 'exports', icon: Download, labelKey: 'exports' },
+  { id: 'plans', icon: CreditCard, labelKey: 'plansView' },
 ];
 
 export default function EvoLayout({

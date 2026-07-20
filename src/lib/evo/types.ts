@@ -1,4 +1,5 @@
 import type { EnrichedProject, AnalysisHistoryEntry, ExportFormat, ExportTier } from './vnext-types';
+import type { SubscriptionState } from './subscriptions';
 
 export type Locale = 'en' | 'ru' | 'de' | 'tr';
 export type Theme = 'dark' | 'light';
@@ -73,8 +74,12 @@ export interface EvoState {
   showDetail: boolean;
   toasts: Toast[];
   ownerToken: string | null;
+  subscription: SubscriptionState;
   setActiveView: (view: string) => void;
   setOwnerToken: (token: string | null) => void;
+  setSubscriptionTier: (tier: ExportTier) => void;
+  incrementAnalysisUsage: () => void;
+  incrementReportUsage: () => void;
   setLocale: (locale: Locale) => void;
   setTheme: (theme: Theme) => void;
   setSearchQuery: (query: string) => void;

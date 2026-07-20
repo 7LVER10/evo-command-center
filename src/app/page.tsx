@@ -10,6 +10,7 @@ import EvoPipeline from '@/components/evo/evo-pipeline';
 import EvoSignals from '@/components/evo/evo-signals';
 import EvoHistory from '@/components/evo/evo-history';
 import EvoExports from '@/components/evo/evo-exports';
+import EvoPlans from '@/components/evo/evo-plans';
 import EvoHealth from '@/components/evo/evo-health';
 import EvoDebug from '@/components/evo/evo-debug';
 
@@ -35,6 +36,7 @@ export default function Home() {
           {activeView === 'signals' && <EvoSignals />}
           {activeView === 'history' && <EvoHistory />}
           {activeView === 'exports' && <EvoExports />}
+          {activeView === 'plans' && <EvoPlans />}
           {activeView === 'health' && <EvoHealth />}
           {activeView === 'debug' && <EvoDebug />}
         </>

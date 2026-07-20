@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { EvoState, ProjectStatus } from './types';
 import { EnrichedProject, ExportFormat, ExportTier } from './vnext-types';
+import { SubscriptionState } from './subscriptions';
 import { generateExport, downloadExport, copyToClipboard } from './export-engine';
 import { t } from './i18n';
 import { logger } from './logger';
@@ -53,9 +54,13 @@ export const useEvoStore = create<EvoState>((set, get) => ({
   showDetail: false,
   toasts: [],
   ownerToken: null,
+  subscription: { currentTier: 'standard', analysesUsed: 0, reportsUsed: 0, projectsViewed: 0 },
 
   setActiveView: (view) => set({ activeView: view }),
   setOwnerToken: (token) => set({ ownerToken: token }),
+  setSubscriptionTier: (tier) => set((s) => ({ subscription: { ...s.subscription, currentTier: tier } })),
+  incrementAnalysisUsage: () => set((s) => ({ subscription: { ...s.subscription, analysesUsed: s.subscription.analysesUsed + 1 } })),
+  incrementReportUsage: () => set((s) => ({ subscription: { ...s.subscription, reportsUsed: s.subscription.reportsUsed + 1 } })),
 
   setLocale: (locale) => {
     set({ locale });
