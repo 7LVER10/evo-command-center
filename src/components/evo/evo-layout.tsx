@@ -6,8 +6,9 @@ import { t } from '@/lib/evo/i18n';
 import {
   LayoutDashboard, FolderOpen, Radio, Clock,
   Download, Search, Zap, Settings, X, Lock,
-  CheckCircle, AlertTriangle, CreditCard
+  CheckCircle, AlertTriangle, CreditCard, User
 } from 'lucide-react';
+import EvoAuth from './evo-auth';
 
 const navItems = [
   { id: 'dashboard', icon: LayoutDashboard, labelKey: 'dashboard' },
@@ -37,6 +38,15 @@ export default function EvoLayout({
   const [auditRecords, setAuditRecords] = useState<Array<Record<string, unknown>>>([]);
   const [auditLoading, setAuditLoading] = useState(false);
   const [healthStatus, setHealthStatus] = useState<'ok' | 'degraded' | 'down' | 'unknown'>('unknown');
+  const [showAuth, setShowAuth] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ id: number; email: string; displayName: string; tier: string } | null>(null);
+
+  // Check session on mount
+  useEffect(() => {
+    fetch('/api/auth/session').then(r => r.json()).then(data => {
+      if (data.authenticated) setCurrentUser(data.user);
+    }).catch(() => {});
+  }, []);
 
   const fetchHealth = useCallback(async () => {
     try {
@@ -178,15 +188,37 @@ export default function EvoLayout({
                t(locale, 'healthChecking')}
             </span>
           </div>
+          {currentUser ? (
+            <div className="mt-2 flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5">
+              <div className="w-6 h-6 rounded-full bg-cyan-400/20 flex items-center justify-center">
+                <User className="w-3 h-3 text-cyan-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[10px] text-white truncate">{currentUser.displayName || currentUser.email}</div>
+                <div className="text-[9px] text-slate-500">{currentUser.tier}</div>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowAuth(true)}
+              className="mt-2 w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-[10px] text-slate-600 hover:text-slate-400 hover:bg-white/3 transition"
+            >
+              <User className="w-3 h-3" />
+              <span>{t(locale, 'authLogin')}</span>
+            </button>
+          )}
           <button
             onClick={() => setShowOwnerGate(true)}
-            className="mt-2 w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-[10px] text-slate-600 hover:text-slate-400 hover:bg-white/3 transition"
+            className="mt-1 w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-[10px] text-slate-600 hover:text-slate-400 hover:bg-white/3 transition"
           >
             <Settings className="w-3 h-3" />
             <span>{t(locale, 'ownerAccess')}</span>
           </button>
         </div>
       </aside>
+
+      {/* Auth Modal */}
+      <EvoAuth isOpen={showAuth} onClose={() => setShowAuth(false)} />
 
       {/* Owner Gate Modal */}
       {showOwnerGate && (

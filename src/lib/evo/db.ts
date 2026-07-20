@@ -94,6 +94,26 @@ function initSchema(db: Database.Database) {
       error_summary TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      display_name TEXT NOT NULL DEFAULT '',
+      avatar_url TEXT,
+      auth_provider TEXT NOT NULL DEFAULT 'email',
+      subscription_tier TEXT NOT NULL DEFAULT 'minimal',
+      password_hash TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      last_login TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS user_sessions (
+      id TEXT PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      expires_at TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    );
   `);
 }
 
