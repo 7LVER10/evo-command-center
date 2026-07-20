@@ -6,7 +6,7 @@ import { t, nicheLabel } from '@/lib/evo/i18n';
 import { STAGE_COLORS, PRIORITY_COLORS } from '@/lib/evo/constants';
 import {
   TrendingUp, TrendingDown, AlertTriangle, CheckCircle,
-  BarChart3, Activity, Zap, Target, Clock, Minus
+  BarChart3, Activity, Zap, Clock, Minus
 } from 'lucide-react';
 
 export default function EvoDashboard() {
@@ -16,14 +16,13 @@ export default function EvoDashboard() {
   const hasEnriched = enrichedProjects.length > 0;
 
   const stats = useMemo(() => {
-    if (!projects.length) return { total: 0, highOpportunity: 0, flaggedRisks: 0, avgMargin: 0, avgRelevance: 0, totalBudget: 0 };
+    if (!projects.length) return { total: 0, highOpportunity: 0, flaggedRisks: 0, avgMargin: 0, avgRelevance: 0 };
     return {
       total: projects.length,
       highOpportunity: projects.filter(p => p.relevance > 0.8).length,
       flaggedRisks: projects.filter(p => p.relevance < 0.7).length,
       avgMargin: Math.round(projects.reduce((s, p) => s + Math.round(p.relevance * 85 + (p.id % 15)), 0) / projects.length),
       avgRelevance: Math.round(projects.reduce((s, p) => s + Math.round(p.relevance * 100), 0) / projects.length),
-      totalBudget: Math.round(projects.reduce((s, p) => s + p.relevance * 1200, 0)),
     };
   }, [projects]);
 
@@ -58,7 +57,6 @@ export default function EvoDashboard() {
       .map(p => ({
         ...p,
         margin: Math.round(p.relevance * 85 + (p.id % 15)),
-        budget: Math.round(p.relevance * 1200),
       }));
   }, [projects]);
 
@@ -86,7 +84,7 @@ export default function EvoDashboard() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-5 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-[#161923]/70 to-[#0f1119]/50 backdrop-blur-xl border border-white/6 rounded-xl p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="p-2 rounded-lg bg-cyan-400/10"><BarChart3 className="w-4 h-4 text-cyan-400" /></div>
@@ -118,94 +116,53 @@ export default function EvoDashboard() {
           <div className="flex items-center justify-between mb-2">
             <div className="p-2 rounded-lg bg-amber-400/10"><Activity className="w-4 h-4 text-amber-400" /></div>
           </div>
-          <div className="text-2xl font-bold text-amber-400">{stats.avgMargin}%</div>
-          <div className="text-xs text-slate-500">{t(locale, 'avgMarginLabel')}</div>
-        </div>
-
-        <div className="bg-gradient-to-br from-[#161923]/70 to-[#0f1119]/50 backdrop-blur-xl border border-white/6 rounded-xl p-4">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-2 rounded-lg bg-violet-400/10"><Target className="w-4 h-4 text-violet-400" /></div>
-          </div>
-          <div className="text-2xl font-bold text-violet-400">{stats.totalBudget.toLocaleString()}</div>
-          <div className="text-xs text-slate-500">{t(locale, 'budgetUnit')} {t(locale, 'aiBudget')}</div>
+          <div className="text-2xl font-bold text-amber-400">{analyzedCount}</div>
+          <div className="text-xs text-slate-500">{t(locale, 'analyzedLabel')}</div>
         </div>
       </div>
 
       {/* Next Best Action */}
       {!hasAnalysis ? (
         <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-400/20 rounded-xl p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-cyan-400/20">
-                <Zap className="w-5 h-5 text-cyan-400" />
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-cyan-400/20">
+              <Zap className="w-5 h-5 text-cyan-400" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-white">
+                {locale === 'ru' ? `${projects.length} проектов готовы к анализу`
+                  : locale === 'de' ? `${projects.length} Projekte bereit zur Analyse`
+                  : locale === 'tr' ? `${projects.length} proje analiz için hazır`
+                  : `${projects.length} projects ready for analysis`}
               </div>
-              <div>
-                <div className="text-sm font-semibold text-white">
-                  {locale === 'ru' ? 'Начните с анализа проектов'
-                    : locale === 'de' ? 'Beginnen Sie mit der Projektanalyse'
-                    : locale === 'tr' ? 'Proje analizi ile başlayın'
-                    : 'Start by analyzing projects'}
-                </div>
-                <div className="text-xs text-slate-400">
-                  {locale === 'ru' ? `${projects.length} проектов доступно для анализа`
-                    : locale === 'de' ? `${projects.length} Projekte zur Analyse verfügbar`
-                    : locale === 'tr' ? `${projects.length} proje analiz için mevcut`
-                    : `${projects.length} projects available for analysis`}
-                </div>
+              <div className="text-xs text-slate-400">
+                {locale === 'ru' ? 'Запустите анализ для получения оценок и рекомендаций'
+                  : locale === 'de' ? 'Starten Sie die Analyse für Bewertungen und Empfehlungen'
+                  : locale === 'tr' ? 'Değerlendirmeler ve öneriler için analizi başlatın'
+                  : 'Run analysis to get scores and recommendations'}
               </div>
             </div>
-            <button
-              onClick={() => setActiveView('projects')}
-              className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-black hover:shadow-lg hover:shadow-cyan-500/20 transition"
-            >
-              {locale === 'ru' ? 'Перейти к проектам'
-                : locale === 'de' ? 'Zu Projekten'
-                : locale === 'tr' ? 'Projelere Git'
-                : 'Go to Projects'}
-            </button>
           </div>
         </div>
       ) : hasEnriched ? (
         <div className="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-400/20 rounded-xl p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-emerald-400/20">
-                <CheckCircle className="w-5 h-5 text-emerald-400" />
-              </div>
-              <div>
-                <div className="text-sm font-semibold text-white">
-                  {locale === 'ru' ? `Анализ завершён: ${analyzedCount} проектов обогащено`
-                    : locale === 'de' ? `Analyse abgeschlossen: ${analyzedCount} Projekte angereichert`
-                    : locale === 'tr' ? `Analiz tamamlandı: ${analyzedCount} proje zenginleştirildi`
-                    : `Analysis complete: ${analyzedCount} projects enriched`}
-                </div>
-                <div className="text-xs text-slate-400">
-                  {locale === 'ru' ? 'Готово к просмотру и экспорту'
-                    : locale === 'de' ? 'Bereit für Überprüfung und Export'
-                    : locale === 'tr' ? 'İnceleme ve dışa aktarmaya hazır'
-                    : 'Ready for review and export'}
-                </div>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-emerald-400/20">
+              <CheckCircle className="w-5 h-5 text-emerald-400" />
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setActiveView('signals')}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white/5 text-slate-300 hover:bg-white/10 transition"
-              >
-                {locale === 'ru' ? 'Разведка'
-                  : locale === 'de' ? 'Intel'
-                  : locale === 'tr' ? 'İstihbarat'
-                  : 'Intel'}
-              </button>
-              <button
-                onClick={() => setActiveView('exports')}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-400/10 text-emerald-300 hover:bg-emerald-400/20 transition"
-              >
-                {locale === 'ru' ? 'Экспорт'
-                  : locale === 'de' ? 'Export'
-                  : locale === 'tr' ? 'Dışa Aktar'
-                  : 'Export'}
-              </button>
+            <div>
+              <div className="text-sm font-semibold text-white">
+                {locale === 'ru' ? `${analyzedCount} проектов обогащено — ${topProjects[0]?.name || ''}`
+                  : locale === 'de' ? `${analyzedCount} Projekte angereichert — ${topProjects[0]?.name || ''}`
+                  : locale === 'tr' ? `${analyzedCount} proje zenginleştirildi — ${topProjects[0]?.name || ''}`
+                  : `${analyzedCount} projects enriched — top: ${topProjects[0]?.name || 'none'}`}
+              </div>
+              <div className="text-xs text-slate-400">
+                {locale === 'ru' ? 'Откройте проекты для просмотра оценок и экспорта'
+                  : locale === 'de' ? 'Öffnen Sie Projekte für Bewertungen und Export'
+                  : locale === 'tr' ? 'Değerlendirmeler ve dışa aktarma için projeleri açın'
+                  : 'Open projects to view scores and export'}
+              </div>
             </div>
           </div>
         </div>
@@ -234,9 +191,8 @@ export default function EvoDashboard() {
                   <div className="text-[10px] text-slate-500">{p.country} · {nicheLabel(locale, p.niche)}</div>
                 </div>
                 <div className="flex items-center gap-3 text-[10px]">
-                  <span className="text-emerald-400">O:{Math.round(p.relevance * 100)}</span>
-                  <span className="text-cyan-400">M:{p.margin}%</span>
-                  <span className="text-slate-500">{p.budget.toLocaleString()} {t(locale, 'budgetUnit')}</span>
+                  <span className="text-emerald-400">{t(locale, 'oppShort')}:{Math.round(p.relevance * 100)}</span>
+                  <span className="text-cyan-400">{t(locale, 'marginShort')}:{p.margin}%</span>
                 </div>
                 <span className={`px-1.5 py-0.5 text-[9px] font-medium rounded ${PRIORITY_COLORS[p.priority]}`}>
                   {p.priority.toUpperCase()}
@@ -354,7 +310,7 @@ export default function EvoDashboard() {
                 <div className="text-xs text-slate-300 truncate">{nicheLabel(locale, n.niche)}</div>
                 <div className="flex items-center justify-between mt-1">
                   <span className="text-lg font-bold text-white">{n.count}</span>
-                  <span className="text-[10px] text-violet-400">O:{avgRelevance}</span>
+                  <span className="text-[10px] text-violet-400">{t(locale, 'oppShort')}:{avgRelevance}</span>
                 </div>
               </div>
             );
@@ -373,7 +329,7 @@ export default function EvoDashboard() {
                   <CheckCircle className="w-4 h-4 text-emerald-400" />
                   <div>
                     <div className="text-sm text-white">{h.query || t(locale, 'allProjects')}</div>
-                    <div className="text-xs text-slate-500">{h.result_count} {t(locale, 'projects')} · O:{h.avg_opportunity} R:{h.avg_risk}</div>
+                    <div className="text-xs text-slate-500">{h.result_count} {t(locale, 'projects')} · {t(locale, 'oppShort')}:{h.avg_opportunity} {t(locale, 'riskShort')}:{h.avg_risk}</div>
                   </div>
                 </div>
                 <div className="text-xs text-slate-500">{new Date(h.timestamp).toLocaleTimeString()}</div>

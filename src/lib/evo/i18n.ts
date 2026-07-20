@@ -196,6 +196,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     highValue: 'High Value',
     flagged: 'Flagged',
     avgMarginLabel: 'Avg Margin',
+    analyzedLabel: 'Analyzed',
+    oppShort: 'Opp',
+    riskShort: 'Risk',
+    marginShort: 'Margin',
     noAnalysisHistory: 'No analysis history yet. Run analysis to see activity.',
     idle: 'Idle',
     // History
@@ -445,6 +449,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     highValue: 'Высокая ценность',
     flagged: 'Помечены',
     avgMarginLabel: 'Средняя маржа',
+    analyzedLabel: 'Проанализировано',
+    oppShort: 'Возм',
+    riskShort: 'Риск',
+    marginShort: 'Маржа',
     noAnalysisHistory: 'История анализов пока пуста. Запустите анализ для просмотра активности.',
     idle: 'Ожидание',
     // History
@@ -694,6 +702,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     highValue: 'Hochwertig',
     flagged: 'Markiert',
     avgMarginLabel: 'Durchschn. Marge',
+    analyzedLabel: 'Analysiert',
+    oppShort: 'Chance',
+    riskShort: 'Risiko',
+    marginShort: 'Marge',
     noAnalysisHistory: 'Noch kein Analyseverlauf. Analyse starten, um Aktivitäten zu sehen.',
     idle: 'Leerlauf',
     // History
@@ -943,6 +955,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     highValue: 'Yüksek Değer',
     flagged: 'İşaretli',
     avgMarginLabel: 'Ort. Marj',
+    analyzedLabel: 'Analiz Edildi',
+    oppShort: 'Fırsat',
+    riskShort: 'Risk',
+    marginShort: 'Marj',
     noAnalysisHistory: 'Henüz analiz geçmişi yok. Aktiviteleri görmek için analiz başlatın.',
     idle: 'Boşta',
     // History

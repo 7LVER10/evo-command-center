@@ -30,9 +30,9 @@ export default function EvoHistory() {
                 </div>
                 <div className="text-right">
                   <div className="flex items-center gap-3 text-xs">
-                    <span className="text-emerald-400">O:{h.avg_opportunity}</span>
-                    <span className="text-rose-400">R:{h.avg_risk}</span>
-                    <span className="text-cyan-400">M:{h.avg_margin}</span>
+                    <span className="text-emerald-400">{t(locale, 'oppShort')}:{h.avg_opportunity}</span>
+                    <span className="text-rose-400">{t(locale, 'riskShort')}:{h.avg_risk}</span>
+                    <span className="text-cyan-400">{t(locale, 'marginShort')}:{h.avg_margin}</span>
                   </div>
                   <div className="text-xs text-slate-500 mt-1">
                     {new Date(h.timestamp).toLocaleDateString()} {new Date(h.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

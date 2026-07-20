@@ -4,15 +4,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { useEvoStore } from '@/lib/evo/store';
 import { t } from '@/lib/evo/i18n';
 import {
-  LayoutDashboard, FolderOpen, GitBranch, Radio, Clock,
-  Download, Search, Bell, Zap, Settings, X, Lock, HeartPulse,
-  Bug, CheckCircle, AlertTriangle
+  LayoutDashboard, FolderOpen, Radio, Clock,
+  Download, Search, Zap, Settings, X, Lock,
+  CheckCircle, AlertTriangle
 } from 'lucide-react';
 
 const navItems = [
   { id: 'dashboard', icon: LayoutDashboard, labelKey: 'dashboard' },
   { id: 'projects', icon: FolderOpen, labelKey: 'projectsView' },
-  { id: 'pipeline', icon: GitBranch, labelKey: 'pipeline' },
   { id: 'signals', icon: Radio, labelKey: 'signals' },
   { id: 'history', icon: Clock, labelKey: 'history' },
   { id: 'exports', icon: Download, labelKey: 'exports' },
@@ -409,9 +408,6 @@ export default function EvoLayout({
                 </button>
               ))}
             </div>
-            <button className="relative p-2 rounded-lg hover:bg-white/5">
-              <Bell className="w-4 h-4 text-slate-400" />
-            </button>
           </div>
         </header>
 
