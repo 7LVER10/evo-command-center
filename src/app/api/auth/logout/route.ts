@@ -1,3 +1,4 @@
+// Auth logout endpoint — clears session
 import { NextRequest, NextResponse } from 'next/server';
 import { deleteSession } from '@/lib/evo/auth-user';
 

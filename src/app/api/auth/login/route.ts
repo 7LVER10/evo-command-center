@@ -1,3 +1,4 @@
+// Auth login endpoint — email/password, Google, GitHub, Web3 wallet
 import { NextRequest, NextResponse } from 'next/server';
 import { createUser, getUserByEmail, createSession } from '@/lib/evo/auth-user';
 import { logger } from '@/lib/evo/logger';

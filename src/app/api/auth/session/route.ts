@@ -1,3 +1,4 @@
+// Auth session validation endpoint
 import { NextRequest, NextResponse } from 'next/server';
 import { getSessionUser } from '@/lib/evo/auth-user';
 
