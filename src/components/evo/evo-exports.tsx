@@ -65,7 +65,7 @@ export default function EvoExports() {
                   <div className="text-xs text-slate-500">{p.country} · {nicheLabel(locale, p.niche)}</div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-emerald-400">O:{p.scores?.opportunity?.value}</span>
+                  <span className="text-xs text-emerald-400">{t(locale, 'oppShort')}:{p.scores?.opportunity?.value}</span>
                   <button
                     onClick={() => exportEnriched(p, 'html_report', selectedTier)}
                     className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400/20 transition"

@@ -6,7 +6,7 @@ import { t, nicheLabel } from '@/lib/evo/i18n';
 import { STAGE_COLORS, PRIORITY_COLORS } from '@/lib/evo/constants';
 import {
   TrendingUp, TrendingDown, AlertTriangle, CheckCircle,
-  BarChart3, Activity, Zap, Clock, Minus
+  BarChart3, Activity, Zap
 } from 'lucide-react';
 
 export default function EvoDashboard() {
@@ -341,24 +341,6 @@ export default function EvoDashboard() {
         )}
       </div>
 
-      {/* System Status */}
-      <div className="bg-gradient-to-br from-[#161923]/70 to-[#0f1119]/50 backdrop-blur-xl border border-white/6 rounded-xl p-4">
-        <h3 className="text-sm font-semibold text-white mb-3">{t(locale, 'systemStatus')}</h3>
-        <div className="grid grid-cols-5 gap-3">
-          {[
-            { label: t(locale, 'apiGateway'), status: 'ok', value: '200' },
-            { label: t(locale, 'agentStack'), status: 'ok', value: '6/6' },
-            { label: t(locale, 'analysisQueue'), status: 'ok', value: t(locale, 'idle') },
-            { label: t(locale, 'persistence'), status: 'ok', value: 'SQLite' },
-            { label: t(locale, 'exportEngine'), status: 'ok', value: '5 fmt' },
-          ].map((s) => (
-            <div key={s.label} className="flex items-center justify-between p-2 rounded-lg bg-white/3">
-              <span className="text-xs text-slate-500">{s.label}</span>
-              <span className={`text-xs font-medium ${s.status === 'ok' ? 'text-emerald-400' : 'text-amber-400'}`}>{s.value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

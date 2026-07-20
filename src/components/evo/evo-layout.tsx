@@ -32,7 +32,7 @@ export default function EvoLayout({
   const [ownerInput, setOwnerInput] = useState('');
   const [ownerError, setOwnerError] = useState(false);
   const [ownerLoading, setOwnerLoading] = useState(false);
-  const [ownerTab, setOwnerTab] = useState<'health' | 'debug' | 'audit'>('health');
+  const [ownerTab, setOwnerTab] = useState<'health' | 'audit'>('health');
   const [auditRecords, setAuditRecords] = useState<Array<Record<string, unknown>>>([]);
   const [auditLoading, setAuditLoading] = useState(false);
   const [healthStatus, setHealthStatus] = useState<'ok' | 'degraded' | 'down' | 'unknown'>('unknown');
@@ -256,12 +256,6 @@ export default function EvoLayout({
                 {t(locale, 'systemHealth')}
               </button>
               <button
-                onClick={() => setOwnerTab('debug')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${ownerTab === 'debug' ? 'bg-cyan-400/10 text-cyan-300' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-              >
-                {t(locale, 'debugView')}
-              </button>
-              <button
                 onClick={() => setOwnerTab('audit')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${ownerTab === 'audit' ? 'bg-cyan-400/10 text-cyan-300' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
               >
@@ -296,23 +290,6 @@ export default function EvoLayout({
                         <span className={`text-xs font-medium ${s.status === 'ok' ? 'text-emerald-400' : 'text-amber-400'}`}>{s.value}</span>
                       </div>
                     ))}
-                  </div>
-                </div>
-              )}
-
-              {ownerTab === 'debug' && (
-                <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-white">{t(locale, 'rawPayload')}</h3>
-                  <div className="bg-black/40 rounded-lg p-4 overflow-auto max-h-96">
-                    <pre className="text-[11px] text-slate-400 font-mono">
-                      {JSON.stringify({
-                        projects: projects.length,
-                        enriched: enrichedProjects.length,
-                        locales: ['en', 'ru', 'de', 'tr'],
-                        nicheCount: 11,
-                        exportFormats: 5,
-                      }, null, 2)}
-                    </pre>
                   </div>
                 </div>
               )}
