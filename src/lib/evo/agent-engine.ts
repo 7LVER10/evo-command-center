@@ -5,6 +5,35 @@ import {
   ActionRecommendation, CompetitorContext, EnrichedProject
 } from './vnext-types';
 
+// ═══════════════════════════════════════════════════════════════
+// AGENT ROLES — Each analyst has a single, non-overlapping job:
+//
+// 1. geo_analyst     → Evaluates geographic market risk and stability
+// 2. niche_analyst   → Evaluates industry/niche growth trajectory
+// 3. competitor_analyst → Evaluates competitive landscape and saturation
+// 4. pricing_analyst → Estimates budget scale and commercial potential
+// 5. margin_analyst  → Projects margin quality and key drivers
+// 6. synthesis_agent → Combines all outputs into summary and recommendation
+//
+// No two agents overlap. Each produces independent output.
+// Partial failure of any agent does not kill the pipeline.
+// ═══════════════════════════════════════════════════════════════
+
+// ─── Deterministic seed from project data (no Math.random) ───
+function deterministicHash(project: Project, salt: string): number {
+  const str = `${project.id}-${project.name}-${project.country}-${salt}`;
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
+  }
+  return Math.abs(hash);
+}
+
+// ─── 1. GEO ANALYST ───
+// Responsibility: Evaluate geographic market risk and stability.
+// Input: project.country
+// Output: stability score, regulatory risk, infrastructure readiness
+// Overlap with others: NONE
 function runGeoAnalyst(project: Project): AgentOutput {
   const geoRiskMap: Record<string, number> = {
     'Russia': 0.7, 'Turkey': 0.4, 'UAE': 0.2, 'Saudi Arabia': 0.25,
@@ -30,6 +59,11 @@ function runGeoAnalyst(project: Project): AgentOutput {
   };
 }
 
+// ─── 2. NICHE ANALYST ───
+// Responsibility: Evaluate industry/niche growth trajectory and demand.
+// Input: project.niche
+// Output: growth index, demand trajectory, entry barriers
+// Overlap with others: NONE
 function runNicheAnalyst(project: Project): AgentOutput {
   const nicheGrowthMap: Record<string, number> = {
     'IT & Software': 0.92, 'AI & Machine Learning': 0.95, 'Cybersecurity': 0.9,
@@ -61,8 +95,15 @@ function runNicheAnalyst(project: Project): AgentOutput {
   };
 }
 
-function runCompetitorAnalyst(_project: Project): AgentOutput {
-  const competitorCount = Math.floor(Math.random() * 8) + 3;
+// ─── 3. COMPETITOR ANALYST ───
+// Responsibility: Evaluate competitive landscape and market saturation.
+// Input: project.country, project.niche, project.relevance
+// Output: competitor count, saturation level, differentiation potential
+// Overlap with others: NONE
+// Note: Uses deterministic hash instead of Math.random()
+function runCompetitorAnalyst(project: Project): AgentOutput {
+  const hash = deterministicHash(project, 'competitor');
+  const competitorCount = (hash % 8) + 3;
   const saturation = competitorCount > 8 ? 'high' : competitorCount > 5 ? 'medium' : 'low';
 
   return {
@@ -78,6 +119,11 @@ function runCompetitorAnalyst(_project: Project): AgentOutput {
   };
 }
 
+// ─── 4. PRICING ANALYST ───
+// Responsibility: Estimate budget scale and commercial potential.
+// Input: project.relevance
+// Output: estimated budget, pricing power, payment terms
+// Overlap with others: NONE
 function runPricingAnalyst(project: Project): AgentOutput {
   const budgetMln = project.relevance * 1200;
   const pricingPower = project.relevance > 0.85 ? 'strong' : project.relevance > 0.7 ? 'moderate' : 'limited';
@@ -95,6 +141,11 @@ function runPricingAnalyst(project: Project): AgentOutput {
   };
 }
 
+// ─── 5. MARGIN ANALYST ───
+// Responsibility: Project margin quality and key drivers.
+// Input: project.relevance, project.id
+// Output: margin projection, quality classification, key driver
+// Overlap with others: NONE
 function runMarginAnalyst(project: Project): AgentOutput {
   const margin = Math.round(project.relevance * 85 + (project.id % 15));
   const marginQuality = margin > 70 ? 'excellent' : margin > 50 ? 'good' : 'acceptable';
@@ -112,6 +163,11 @@ function runMarginAnalyst(project: Project): AgentOutput {
   };
 }
 
+// ─── 6. SYNTHESIS AGENT ───
+// Responsibility: Combine all agent outputs into summary and recommendation.
+// Input: all 5 agent outputs + locale
+// Output: summary text, recommendation, confidence, key factors
+// Overlap with others: NONE — this is the composition layer
 function runSynthesisAgent(
   project: Project,
   geoOutput: AgentOutput,
@@ -121,12 +177,12 @@ function runSynthesisAgent(
   marginOutput: AgentOutput,
   locale: Locale
 ): SynthesisOutput {
-  const avgConfidence = (
-    geoOutput.confidence + nicheOutput.confidence +
-    competitorOutput.confidence + pricingOutput.confidence +
-    marginOutput.confidence
-  ) / 5;
+  // Calculate average confidence from all agents
+  // If an agent failed (confidence 0.1), it pulls the average down honestly
+  const agentConfidences = [geoOutput, nicheOutput, competitorOutput, pricingOutput, marginOutput];
+  const avgConfidence = agentConfidences.reduce((sum, a) => sum + a.confidence, 0) / agentConfidences.length;
 
+  // Extract key factors from each agent (first factor from each)
   const keyFactors = [
     ...geoOutput.factors.slice(0, 1),
     ...nicheOutput.factors.slice(0, 1),
@@ -150,6 +206,10 @@ function runSynthesisAgent(
   };
 }
 
+// ─── SCORE COMPUTATION ───
+// Responsibility: Compute opportunity, risk, and margin scores from agent outputs.
+// Input: project, geo output, niche output, margin output
+// Output: ProjectScores with breakdowns
 function computeScores(project: Project, geoOutput: AgentOutput, nicheOutput: AgentOutput, marginOutput: AgentOutput): ProjectScores {
   const geoData = geoOutput.raw_data as { stability?: number };
   const nicheData = nicheOutput.raw_data as { growth?: number };
@@ -190,29 +250,18 @@ function computeScores(project: Project, geoOutput: AgentOutput, nicheOutput: Ag
   return { opportunity: opportunityScore, risk: riskScore, margin: marginScore };
 }
 
+// ─── SOURCE GENERATION ───
+// Responsibility: Generate source metadata for the enriched project.
 function generateSources(_project: Project): SourceSignal[] {
   return [
-    {
-      type: 'tender_registry',
-      freshness: '2 days ago',
-      confidence: 0.92,
-      explanation: 'Official tender registry data, verified against government sources.',
-    },
-    {
-      type: 'industry_report',
-      freshness: '1 week ago',
-      confidence: 0.85,
-      explanation: 'Industry analysis report from established market research firm.',
-    },
-    {
-      type: 'web_scrape',
-      freshness: '3 days ago',
-      confidence: 0.7,
-      explanation: 'Automated web scraping from public business registries and news.',
-    },
+    { type: 'tender_registry', freshness: '2 days ago', confidence: 0.92, explanation: 'Official tender registry data, verified against government sources.' },
+    { type: 'industry_report', freshness: '1 week ago', confidence: 0.85, explanation: 'Industry analysis report from established market research firm.' },
+    { type: 'web_scrape', freshness: '3 days ago', confidence: 0.7, explanation: 'Automated web scraping from public business registries and news.' },
   ];
 }
 
+// ─── ACTION GENERATION ───
+// Responsibility: Generate recommended actions based on scores.
 function generateActions(project: Project, scores: ProjectScores): ActionRecommendation[] {
   const actions: ActionRecommendation[] = [];
 
@@ -246,8 +295,12 @@ function generateActions(project: Project, scores: ProjectScores): ActionRecomme
   return actions;
 }
 
+// ─── COMPETITOR CONTEXT ───
+// Responsibility: Generate competitive context summary.
+// Note: Uses deterministic hash instead of Math.random()
 function generateCompetitorContext(project: Project): CompetitorContext {
-  const count = Math.floor(Math.random() * 8) + 3;
+  const hash = deterministicHash(project, 'competitor_context');
+  const count = (hash % 8) + 3;
   return {
     market_position: project.relevance > 0.85 ? 'Strong' : project.relevance > 0.7 ? 'Competitive' : 'Challenging',
     competitor_count: count,
@@ -257,6 +310,10 @@ function generateCompetitorContext(project: Project): CompetitorContext {
   };
 }
 
+// ─── SAFE AGENT RUNNER ───
+// Wraps each agent in try/catch for partial-failure handling.
+// On failure: returns fallback output with low confidence, logs the failure.
+// The pipeline continues — synthesis and scoring use fallback values gracefully.
 function safeAgentRun(name: string, fn: () => AgentOutput, project: Project): AgentOutput {
   const start = Date.now();
   try {
@@ -268,15 +325,18 @@ function safeAgentRun(name: string, fn: () => AgentOutput, project: Project): Ag
     const durationMs = Date.now() - start;
     console.error(`[agent] ${name}:fail ${JSON.stringify({ projectId: project.id, durationMs, error: err instanceof Error ? err.message : String(err) })}`);
     return {
-      role: `${name}_fallback` as AgentRole,
-      signal: `${name} failed — using fallback`,
+      role: 'geo_analyst', // Use valid role as fallback type marker
+      signal: `[degraded] ${name} failed — using default assessment`,
       confidence: 0.1,
-      factors: [`${name} agent failed during execution`],
+      factors: [`${name} agent failed during execution. Using fallback values.`],
       raw_data: {},
     };
   }
 }
 
+// ─── MAIN ORCHESTRATION ───
+// Canonical flow: filter → enrich (5 agents) → synthesize → score → source → action → signal
+// Partial failure: any agent can fail; synthesis and scoring use fallback values gracefully
 export function runAgentStack(project: Project, locale: Locale) {
   const geoOutput = safeAgentRun('geo_analyst', () => runGeoAnalyst(project), project);
   const nicheOutput = safeAgentRun('niche_analyst', () => runNicheAnalyst(project), project);
@@ -300,12 +360,14 @@ export function runAgentStack(project: Project, locale: Locale) {
   };
 }
 
-// Real signals derived from agent outputs and project metrics
+// ─── SIGNAL GENERATION ───
+// Responsibility: Derive market signals from enriched project data.
+// Deterministic — no Math.random() used.
 export function generateSignals(projects: Project[], enrichedProjects: EnrichedProject[]): MarketSignal[] {
   const signals: MarketSignal[] = [];
   let id = 1;
 
-  // Group by country for geo signals
+  // Geo signals: group by country, compute averages
   const geoGroups: Record<string, Project[]> = {};
   projects.forEach(p => {
     if (!geoGroups[p.country]) geoGroups[p.country] = [];
@@ -338,7 +400,7 @@ export function generateSignals(projects: Project[], enrichedProjects: EnrichedP
     });
   });
 
-  // Group by niche for niche signals
+  // Niche signals: group by niche, compute averages
   const nicheGroups: Record<string, Project[]> = {};
   projects.forEach(p => {
     if (!nicheGroups[p.niche]) nicheGroups[p.niche] = [];
@@ -368,7 +430,7 @@ export function generateSignals(projects: Project[], enrichedProjects: EnrichedP
     });
   });
 
-  // Competitor signals from enriched data
+  // Competitor signals from enriched data (deterministic)
   enrichedProjects.forEach(ep => {
     if (ep.competitorContext && signals.length < 10) {
       const ctx = ep.competitorContext;
