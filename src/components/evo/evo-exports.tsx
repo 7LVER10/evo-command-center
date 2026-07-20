@@ -1,46 +1,59 @@
 'use client';
 
+import { useState } from 'react';
 import { useEvoStore } from '@/lib/evo/store';
 import { t, nicheLabel } from '@/lib/evo/i18n';
-import { Printer, Copy } from 'lucide-react';
+import { Printer, Copy, FileText, Star, Crown } from 'lucide-react';
+import type { ExportTier } from '@/lib/evo/vnext-types';
 
-const exportFormats = ['brief', 'sales_brief', 'crm_note', 'telegram'];
-const locales = ['en', 'ru', 'de', 'tr'];
+const tiers: { key: ExportTier; labelKey: string; icon: typeof Printer; color: string; desc: string }[] = [
+  { key: 'minimal', labelKey: 'tierMinimal', icon: FileText, color: 'text-slate-300', desc: 'tierMinimalDesc' },
+  { key: 'standard', labelKey: 'tierStandard', icon: Star, color: 'text-cyan-300', desc: 'tierStandardDesc' },
+  { key: 'premium', labelKey: 'tierPremium', icon: Crown, color: 'text-amber-300', desc: 'tierPremiumDesc' },
+];
 
 export default function EvoExports() {
   const { locale, enrichedProjects, exportEnriched, copyExport } = useEvoStore();
+  const [selectedTier, setSelectedTier] = useState<ExportTier>('standard');
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold text-white">{t(locale, 'exportsView')}</h1>
-        <p className="text-sm text-slate-500">{t(locale, 'exportMatrix').replace('{formats}', String(exportFormats.length)).replace('{locales}', String(locales.length))}</p>
+        <p className="text-sm text-slate-500">{t(locale, 'exportTierDesc')}</p>
       </div>
 
+      {/* Tier Selector */}
       <div className="bg-gradient-to-br from-[#161923]/70 to-[#0f1119]/50 backdrop-blur-xl border border-white/6 rounded-xl p-4">
-        <div className="grid grid-cols-5 gap-2 text-xs">
-          <div className="font-medium text-slate-400">{t(locale, 'format')}</div>
-          {locales.slice(0, 2).map(l => (
-            <div key={l} className="font-medium text-slate-400 text-center">{l.toUpperCase()}</div>
-          ))}
-          <div className="font-medium text-slate-400">{t(locale, 'status')}</div>
-          <div className="font-medium text-slate-400">{t(locale, 'action')}</div>
-
-          {exportFormats.map(f => (
-            <div key={f} className="contents">
-              <div className="text-white text-xs">{t(locale, `export${f.charAt(0).toUpperCase() + f.slice(1).replace('_', '')}`) || f.replace('_', ' ')}</div>
-              {locales.slice(0, 2).map(l => (
-                <div key={`${f}-${l}`} className="text-center">
-                  <span className="px-2 py-0.5 text-[10px] rounded bg-emerald-400/10 text-emerald-300">{t(locale, 'ready')}</span>
+        <h3 className="text-sm font-semibold text-white mb-3">{t(locale, 'exportSelectTier')}</h3>
+        <div className="grid grid-cols-3 gap-3">
+          {tiers.map((tier) => {
+            const Icon = tier.icon;
+            const isActive = selectedTier === tier.key;
+            return (
+              <button
+                key={tier.key}
+                onClick={() => setSelectedTier(tier.key)}
+                className={`p-4 rounded-xl border text-left transition-all ${
+                  isActive
+                    ? 'border-cyan-400/40 bg-cyan-400/10'
+                    : 'border-white/6 bg-white/3 hover:bg-white/5'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : tier.color}`} />
+                  <span className={`text-sm font-semibold ${isActive ? 'text-cyan-300' : 'text-white'}`}>
+                    {t(locale, tier.labelKey)}
+                  </span>
                 </div>
-              ))}
-              <div className="text-center text-xs text-emerald-400">4/4</div>
-              <div className="text-center text-xs text-cyan-400">{t(locale, 'copy')}</div>
-            </div>
-          ))}
+                <p className="text-[11px] text-slate-500">{t(locale, tier.desc)}</p>
+              </button>
+            );
+          })}
         </div>
       </div>
 
+      {/* Projects List */}
       <div className="bg-gradient-to-br from-[#161923]/70 to-[#0f1119]/50 backdrop-blur-xl border border-white/6 rounded-xl p-4">
         <h3 className="text-sm font-semibold text-white mb-3">{t(locale, 'enrichedProjectsAvailable')}</h3>
         {enrichedProjects.length > 0 ? (
@@ -54,7 +67,7 @@ export default function EvoExports() {
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-emerald-400">O:{p.scores?.opportunity?.value}</span>
                   <button
-                    onClick={() => exportEnriched(p, 'html_report')}
+                    onClick={() => exportEnriched(p, 'html_report', selectedTier)}
                     className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400/20 transition"
                     title={t(locale, 'exportHtmlReport')}
                   >

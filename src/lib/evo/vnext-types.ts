@@ -62,12 +62,14 @@ export interface CompetitorContext {
 }
 
 export type ExportFormat = 'brief' | 'sales_brief' | 'crm_note' | 'telegram' | 'json' | 'html_report';
+export type ExportTier = 'minimal' | 'standard' | 'premium';
 
 export interface ExportPayload {
   format: ExportFormat;
   locale: Locale;
   content: string;
   generated_at: string;
+  tier?: ExportTier;
 }
 
 export interface AnalysisHistoryEntry {

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { EvoState, ProjectStatus } from './types';
-import { EnrichedProject, ExportFormat } from './vnext-types';
+import { EnrichedProject, ExportFormat, ExportTier } from './vnext-types';
 import { generateExport, downloadExport, copyToClipboard } from './export-engine';
 import { t } from './i18n';
 import { logger } from './logger';
@@ -176,11 +176,12 @@ export const useEvoStore = create<EvoState>((set, get) => ({
     }
   },
 
-  exportEnriched: (project, format) => {
+  exportEnriched: (project, format, tier) => {
     const { locale } = get();
-    const payload = generateExport(project, format, locale);
+    const payload = generateExport(project, format, locale, tier);
     downloadExport(payload, project.name.replace(/\s+/g, '-').toLowerCase());
-    const label = format === 'html_report' ? t(get().locale, 'exportHtmlReport') : format;
+    const tierLabel = tier === 'minimal' ? t(get().locale, 'tierMinimal') : tier === 'premium' ? t(get().locale, 'tierPremium') : t(get().locale, 'tierStandard');
+    const label = format === 'html_report' ? `${tierLabel} ${t(get().locale, 'exportHtmlReport')}` : format;
     get().addToast({ type: 'success', message: t(get().locale, 'exportedAs').replace('{format}', label) });
   },
 

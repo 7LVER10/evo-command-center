@@ -1,13 +1,13 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useEvoStore } from '@/lib/evo/store';
 import { t, nicheLabel } from '@/lib/evo/i18n';
 import { Locale } from '@/lib/evo/types';
-import { EnrichedProject, ExportFormat } from '@/lib/evo/vnext-types';
+import { EnrichedProject, ExportFormat, ExportTier } from '@/lib/evo/vnext-types';
 import { STAGE_COLORS, STAGE_KEYS, PRIORITY_COLORS } from '@/lib/evo/constants';
 import {
-  Copy, ChevronRight, Zap, X, Printer
+  Copy, ChevronRight, Zap, X, Printer, FileText, Star, Crown
 } from 'lucide-react';
 
 const clientExportFormats: { key: ExportFormat; labelKey: string; hintKey: string }[] = [
@@ -215,9 +215,10 @@ function ProjectDetail({
   enriched?: EnrichedProject;
   locale: Locale;
   onClose: () => void;
-  exportEnriched: (project: EnrichedProject, format: ExportFormat) => void;
+  exportEnriched: (project: EnrichedProject, format: ExportFormat, tier?: ExportTier) => void;
   copyExport: (project: EnrichedProject, format: ExportFormat) => Promise<void>;
 }) {
+  const [selectedTier, setSelectedTier] = useState<ExportTier>('standard');
   const opp = enriched?.scores?.opportunity?.value || Math.round(project.relevance * 100);
   const risk = enriched?.scores?.risk?.value || Math.round((1 - project.relevance) * 100);
   const margin = enriched?.scores?.margin?.value || Math.round(project.relevance * 85 + (project.id % 15));
@@ -411,8 +412,35 @@ function ProjectDetail({
           {enriched && (
             <div>
               <h3 className="text-xs font-semibold text-slate-400 uppercase mb-3">{t(locale, 'exportHandoff')}</h3>
+
+              {/* Tier Selector */}
+              <div className="flex gap-2 mb-3">
+                {[
+                  { key: 'minimal' as ExportTier, icon: FileText, labelKey: 'tierMinimal' },
+                  { key: 'standard' as ExportTier, icon: Star, labelKey: 'tierStandard' },
+                  { key: 'premium' as ExportTier, icon: Crown, labelKey: 'tierPremium' },
+                ].map((tier) => {
+                  const Icon = tier.icon;
+                  const isActive = selectedTier === tier.key;
+                  return (
+                    <button
+                      key={tier.key}
+                      onClick={() => setSelectedTier(tier.key)}
+                      className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium transition-all ${
+                        isActive
+                          ? 'bg-cyan-400/15 border border-cyan-400/30 text-cyan-300'
+                          : 'bg-white/5 border border-white/6 text-slate-400 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      <Icon className="w-3 h-3" />
+                      {t(locale, tier.labelKey)}
+                    </button>
+                  );
+                })}
+              </div>
+
               <button
-                onClick={() => exportEnriched(enriched, 'html_report')}
+                onClick={() => exportEnriched(enriched, 'html_report', selectedTier)}
                 className="w-full mb-3 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-black hover:shadow-lg hover:shadow-cyan-500/20 transition"
               >
                 <Printer className="w-4 h-4" />

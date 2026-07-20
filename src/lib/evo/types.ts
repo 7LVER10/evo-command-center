@@ -1,4 +1,4 @@
-import type { EnrichedProject, AnalysisHistoryEntry, ExportFormat } from './vnext-types';
+import type { EnrichedProject, AnalysisHistoryEntry, ExportFormat, ExportTier } from './vnext-types';
 
 export type Locale = 'en' | 'ru' | 'de' | 'tr';
 export type Theme = 'dark' | 'light';
@@ -87,7 +87,7 @@ export interface EvoState {
   runAnalysis: () => Promise<void>;
   loadProjects: () => Promise<void>;
   updateProjectStatus: (id: number, status: ProjectStatus) => Promise<void>;
-  exportEnriched: (project: EnrichedProject, format: ExportFormat) => void;
+  exportEnriched: (project: EnrichedProject, format: ExportFormat, tier?: ExportTier) => void;
   copyExport: (project: EnrichedProject, format: ExportFormat) => Promise<void>;
   loadHistory: () => void;
 }
