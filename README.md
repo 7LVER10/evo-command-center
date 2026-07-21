@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EVO Command Center
 
-## Getting Started
+> AI-powered B2B intelligence platform for project analysis, market signals, and client-ready reporting.
 
-First, run the development server:
+## What This Is
+
+EVO Command Center is a structured intelligence platform that helps business development teams evaluate B2B opportunities, analyze project portfolios, and produce professional client reports.
+
+## How It Works
+
+1. **Search & Filter** — find projects by name, country, niche, or stage
+2. **Analyze** — run 5 specialized agents (geo, niche, competitor, pricing, margin) that independently evaluate each project
+3. **Score & Synthesize** — agents produce composite scores and a synthesis recommendation
+4. **Export** — generate client-ready reports at Minimal, Standard, or Premium tiers
+
+## Subscription Tiers
+
+| Tier | Price | Projects | Analyses/mo | Reports/mo |
+|------|-------|----------|-------------|------------|
+| Minimal | $49/mo | 5 | 10 | 5 |
+| Standard | $149/mo | 25 | 50 | 25 |
+| Premium | $399/mo | 100 | 200 | 100 |
+
+## Tech Stack
+
+- Next.js (App Router) + TypeScript
+- SQLite (better-sqlite3)
+- Zustand (client state)
+- Tailwind CSS
+- Deployed on Render
+
+## Running Locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `EVO_OWNER_TOKEN` | Yes (production) | Owner access token for audit/history endpoints |
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Freeze Status — 2026-07-20
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**EVO is paused in a clean, production-ready state.**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### What is live and working
+- Email authentication (login, session, logout)
+- 3-tier subscription system (Minimal / Standard / Premium)
+- Server-side analysis pipeline (5 agents + synthesis)
+- Client-ready report generation (Minimal / Standard / Premium + presentation deck)
+- Owner-protected audit and history endpoints
+- 4-locale support (EN, RU, DE, TR)
+- Dashboard with real data (projects, signals, agent summary, plan status)
 
-## Deploy on Vercel
+### What is intentionally hidden
+- Google OAuth — requires OAuth credentials to activate
+- GitHub OAuth — requires OAuth App credentials to activate
+- Web3 wallet — requires provider library to activate
+- Owner panel Health/Audit tabs — behind owner token authentication
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Known limitations
+- Analysis runs on the server synchronously (no async queue)
+- SQLite is single-instance (no horizontal scaling)
+- History stored server-side with 200-row retention
+- No CI/CD pipeline (deployed via git push to Render)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### When resuming EVO
+1. If adding OAuth providers: configure credentials in Render env vars, re-enable buttons in `evo-auth.tsx`
+2. If adding new councils: follow `standards/acceptance-gates.md`
+3. If expanding services: follow `templates/template-service-package.md`
+4. Always verify on Render after pushing to `master`
